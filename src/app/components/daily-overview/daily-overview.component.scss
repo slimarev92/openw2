@@ -1,0 +1,11 @@
+ul {
+    border: 3px solid black;
+    width: fit-content;
+    padding: 10px;
+    margin-bottom: 10px;
+    
+    > li {
+       width: fit-content;
+       padding: 10px; 
+    }
+}

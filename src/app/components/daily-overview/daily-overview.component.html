@@ -1,0 +1,27 @@
+<h2>Today's Overview - {{today.toLocaleDateString('en-gb')}}</h2>
+<button (click)="show()">show</button>
+
+<ng-container *ngFor="let meal of dailyMeals; let i = index">
+    <h3>{{ i + 1}}: {{ meal.time.toLocaleTimeString('en-gb') }}</h3>
+    <ul>
+        <li *ngFor="let item of meal.items">
+            <h3>{{item.name}}</h3>
+            <p>{{item.points}} x {{ item.amount }} = {{ (item.points || 0) * (item.amount || 0) }}</p>
+            <p>{{mealTypeEnum[item.type]}}</p>
+        </li>
+    </ul>
+</ng-container>
+
+<ng-template #moshe>
+    <p>NAME'S MOSHE, MOSHE BOND</p>
+    <p>NAME'S MOSHE, MOSHE BOND</p>
+    <p>NAME'S MOSHE, MOSHE BOND</p>
+    <p>NAME'S MOSHE, MOSHE BOND</p>
+    <p>NAME'S MOSHE, MOSHE BOND</p>
+    <p>NAME'S MOSHE, MOSHE BOND</p>
+    <p>NAME'S MOSHE, MOSHE BOND</p>
+    <p>NAME'S MOSHE, MOSHE BOND</p>
+
+    <button (click)="hide()">HIDE</button>
+</ng-template>
+
