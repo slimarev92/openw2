@@ -4,6 +4,7 @@ import { Component, TemplateRef, ViewChild } from "@angular/core";
 import { Meal } from "src/app/models/meal";
 import { MealItemType } from "src/app/models/meal-type";
 import { DialogService } from "src/app/services/dialog.service";
+import { AddItemComponent } from "src/app/components/add-item/add-item.component";
 
 @Component({
     selector: "oww-daily-overview",
@@ -11,7 +12,8 @@ import { DialogService } from "src/app/services/dialog.service";
     styleUrls: ["./daily-overview.component.scss"],
     standalone: true,
     imports: [
-        CommonModule
+        CommonModule,
+        AddItemComponent
     ]
 })
 export class DailyOverviewComponent {
