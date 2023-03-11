@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
-import { Component, ElementRef, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { AfterViewInit, Component, ElementRef, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
+import { fromEvent, Subject, takeUntil } from "rxjs";
 import { DialogService } from "src/app/services/dialog.service";
 
 @Component({
@@ -17,7 +17,7 @@ import { DialogService } from "src/app/services/dialog.service";
     standalone: true,
     imports: [CommonModule]
 })
-export class DialogComponent implements OnDestroy {
+export class DialogComponent implements AfterViewInit, OnDestroy {
     private readonly destroyed: Subject<void> = new Subject();
 
     templateToShow!: TemplateRef<any> | null;
@@ -33,8 +33,11 @@ export class DialogComponent implements OnDestroy {
 
         this.dialogService.close$.pipe(takeUntil(this.destroyed)).subscribe(() => {
             this.dialogElement?.nativeElement.close();
-            this.templateToShow = null;
         });
+    }
+
+    ngAfterViewInit(): void {
+        fromEvent(this.dialogElement.nativeElement, "close").pipe(takeUntil(this.destroyed)).subscribe(() => this.templateToShow = null);
     }
 
     ngOnDestroy(): void {

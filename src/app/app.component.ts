@@ -6,7 +6,11 @@ import { DialogComponent } from "./components/dialog/dialog.component";
 
 @Component({
     selector: 'app-root',
-    templateUrl: './app.component.html',
+    template: `
+      <oww-daily-overview></oww-daily-overview>
+
+      <oww-dialog></oww-dialog>
+    `,
     styleUrls: ['./app.component.scss'],
     standalone: true,
     imports: [DailyOverviewComponent, DialogComponent]

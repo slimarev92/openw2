@@ -1,6 +1,6 @@
 
 import { AsyncPipe, NgFor } from "@angular/common";
-import { Component, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from "@angular/core";
 import { Meal } from "src/app/models/meal";
 import { MealItemType } from "src/app/models/meal-type";
 import { DialogService } from "src/app/services/dialog.service";
@@ -31,6 +31,7 @@ import { MealsService } from "src/app/services/meals.service";
     `,
     styleUrls: ["./daily-overview.component.scss"],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         NgFor,
         AsyncPipe,
@@ -58,7 +59,9 @@ export class DailyOverviewComponent {
 
     saveMeal(meal: Meal) {
         this.dialogService.closeModal();
-
-        this.mealsService.addMeal(meal);
+        
+        if (meal) {
+            this.mealsService.addMeal(meal);
+        }
     }
 } 

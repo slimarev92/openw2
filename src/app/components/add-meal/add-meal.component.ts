@@ -1,5 +1,5 @@
 import { AsyncPipe, NgFor } from "@angular/common";
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { take } from "rxjs";
 import { Meal } from "src/app/models/meal";
@@ -18,8 +18,9 @@ import { MealsService } from "src/app/services/meals.service";
                 <button (click)="removeItem(i)">X</button>
             </li>
         </ul>
-        <div>
-            <input list="items-to-add" [(ngModel)]="selectedItemName" (change)="selectedItemChanged()">
+        <!-- toto sasha: make add-item a component! -->
+        <div class="add-item">
+            <input list="items-to-add" [(ngModel)]="selectedItemName">
 
             <datalist id="items-to-add">
                 <option *ngFor="let option of itemsService.itemDescriptions" [value]="option.name" [ngValue]="option">
@@ -28,26 +29,40 @@ import { MealsService } from "src/app/services/meals.service";
             </datalist>
 
             {{selectedItem?.points}}
-            <input type="number" [min]="0" #amount>
-            <button (click)="addItem(+amount.value)">Add</button>
+            <input type="number" [(ngModel)]="itemAmount" [min]="0" #amount (change)="amount.value = +amount.value < 0 ? '0' : amount.value">
+            <button [disabled]="!selectedItem || !amount.value" (click)="addItem(+amount.value)">Add</button>
         </div>
         <p>This meal is worth {{ calculatedPoints }} points.
-        <button (click)="saveMeal()">Save</button>
+        <button [disabled]="!items.length" (click)="saveMeal()">Save</button>
+        <button (click)="cancel()">Cancel</button>
     `,
-    imports: [NgFor, AsyncPipe, FormsModule],
-    standalone: true,
     styles: [`
                 .free-item { 
                     text-decoration-line: line-through;
                 }
-    `],
-    changeDetection: ChangeDetectionStrategy.OnPush
+                `],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgFor, AsyncPipe, FormsModule]
 })
 export class AddMealComponent {
     @Output()
     meal = new EventEmitter<Meal>();
 
-    protected selectedItemName: string = "";
+    @ViewChild("amount")
+    protected itemAmount: number | undefined = 0;
+
+    protected set selectedItemName(value: string | undefined) {
+        this._selectedItemName = value;
+
+        this.selectedItem = this.itemsService.itemDescriptions.find(i => i.name === this.selectedItemName);
+    }
+
+    protected get selectedItemName() {
+        return this._selectedItemName;
+    }
+
+    private _selectedItemName: string | undefined = "";
 
     protected selectedItem: MealItemDescription | undefined;
 
@@ -106,6 +121,8 @@ export class AddMealComponent {
         }
 
         this.items = [...this.items, { ...this.selectedItem, amount }];
+        this.selectedItemName = undefined;
+        this.itemAmount = undefined;
     }
 
     protected saveMeal() {
@@ -118,8 +135,8 @@ export class AddMealComponent {
         this.meal.emit(meal);
     }
 
-    protected selectedItemChanged() {
-        this.selectedItem = this.itemsService.itemDescriptions.find(i => i.name === this.selectedItemName);
+    protected cancel() {
+        this.meal.emit(undefined);
     }
 
     protected removeItem(itemIndex: number) {
