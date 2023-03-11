@@ -1,9 +1,7 @@
 import { MealItemType } from "./meal-type";
 
-export type MealItem = {
+export type MealItemDescription = {
     name: string,
     points: number,
-    type: MealItemType,
-    amount: number
+    type: MealItemType
 }
-

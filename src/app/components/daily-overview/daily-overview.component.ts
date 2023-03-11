@@ -1,70 +1,54 @@
 
-import { CommonModule } from "@angular/common";
+import { AsyncPipe, NgFor } from "@angular/common";
 import { Component, TemplateRef, ViewChild } from "@angular/core";
 import { Meal } from "src/app/models/meal";
 import { MealItemType } from "src/app/models/meal-type";
 import { DialogService } from "src/app/services/dialog.service";
-import { AddItemComponent } from "src/app/components/add-item/add-item.component";
+import { AddMealComponent } from "src/app/components/add-meal/add-meal.component";
+import { MealsService } from "src/app/services/meals.service";
 
 @Component({
     selector: "oww-daily-overview",
-    templateUrl: "./daily-overview.component.html",
+    template: `
+        <h2>Today's Overview - {{today.toLocaleDateString('en-gb')}} - {{mealsService.dailyPoints$ | async}} Points</h2>
+        <button (click)="showAddModal()">Add Meal</button>
+
+        <ng-container *ngFor="let meal of mealsService.dailyMeals$ | async; let i = index">
+            <!-- todo sasha: why to local timestring en-gb? use browser locale instead -->
+            <h3>{{ i + 1}}: {{ meal.time.toLocaleTimeString('en-gb') }}</h3>
+            <ul>
+                <li *ngFor="let item of meal.items">
+                    <h3>{{item.name}}</h3>
+                    <p>{{item.points}} x {{ item.amount }} = {{ (item.points || 0) * (item.amount || 0) }}</p>
+                    <p>{{mealTypeEnum[item.type]}}</p>
+                </li>
+            </ul>
+        </ng-container>
+
+        <ng-template #addMealModal>
+            <oww-add-meal (meal)="saveMeal($event)"></oww-add-meal>
+        </ng-template>
+    `,
     styleUrls: ["./daily-overview.component.scss"],
     standalone: true,
     imports: [
-        CommonModule,
-        AddItemComponent
+        NgFor,
+        AsyncPipe,
+        AddMealComponent
     ]
 })
 export class DailyOverviewComponent {
     readonly mealTypeEnum = MealItemType;
     readonly today: Date = new Date();
 
-    dailyMeals: Meal[] = [
-        {
-            time: new Date(2023, 0, 13, 15, 23),
-            items: [
-                {
-                    name: "Avocado, quarter",
-                    points: 1,
-                    amount: 1,
-                    type: MealItemType.Vegetable, // todo sasha: check this with yasmin
-                },
-                {
-                    name: "Watermelon, medium slice, 250 g",
-                    points: 5,
-                    amount: 2,
-                    type: MealItemType.Fruit, // todo sasha: check this with yasmin
-                },
-            ]
-        },
-        {
-            time: new Date(2023, 0, 13, 16, 23),
-            items: [
-                {
-                    name: "Avocado, quarter",
-                    points: 1,
-                    amount: 1,
-                    type: MealItemType.Vegetable, // todo sasha: check this with yasmin
-                },
-                {
-                    name: "Watermelon, medium slice, 250 g",
-                    points: 5,
-                    amount: 2,
-                    type: MealItemType.Fruit, // todo sasha: check this with yasmin
-                },
-            ]
-        },
-    ];
-
-    @ViewChild("moshe")
+    @ViewChild("addMealModal")
     dialogTemplate!: TemplateRef<any>;
 
-    constructor(private dialogService: DialogService) {
+    constructor(private dialogService: DialogService, public mealsService: MealsService) {
         
     }
 
-    show() {
+    showAddModal() {
         if (!this.dialogTemplate) {
             return;
         }
@@ -72,7 +56,9 @@ export class DailyOverviewComponent {
         this.dialogService.showModal(this.dialogTemplate);
     }
 
-    hide() {
+    saveMeal(meal: Meal) {
         this.dialogService.closeModal();
+
+        this.mealsService.addMeal(meal);
     }
 } 
