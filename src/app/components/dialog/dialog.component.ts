@@ -5,22 +5,24 @@ import { DialogService } from "src/app/services/dialog.service";
 
 @Component({
     selector: "oww-dialog",
+    template: `
+        <dialog #dialog>
+            <ng-container *ngTemplateOutlet="templateToShow || blank"></ng-container>
+        </dialog>
+        <ng-template #blank></ng-template>
+    `,
     styles: [
         `dialog::backdrop {
             background: rgba(0, 0, 0, 0.6);
          }`
     ],
-    template: `<dialog #dialog>
-                    <ng-container *ngTemplateOutlet="templateToShow || blank"></ng-container>
-                </dialog>
-                <ng-template #blank></ng-template>`,
     standalone: true,
     imports: [CommonModule]
 })
 export class DialogComponent implements AfterViewInit, OnDestroy {
     private readonly destroyed: Subject<void> = new Subject();
 
-    templateToShow!: TemplateRef<any> | null;
+    templateToShow: TemplateRef<any> | undefined;
 
     @ViewChild("dialog", { read: ElementRef })
     dialogElement!: ElementRef<HTMLDialogElement>;
@@ -37,7 +39,7 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        fromEvent(this.dialogElement.nativeElement, "close").pipe(takeUntil(this.destroyed)).subscribe(() => this.templateToShow = null);
+        fromEvent(this.dialogElement.nativeElement, "close").pipe(takeUntil(this.destroyed)).subscribe(() => this.templateToShow = undefined);
     }
 
     ngOnDestroy(): void {

@@ -1,5 +1,5 @@
 import { AsyncPipe, NgFor } from "@angular/common";
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { take } from "rxjs";
 import { Meal } from "src/app/models/meal";
@@ -32,24 +32,23 @@ import { MealsService } from "src/app/services/meals.service";
             <input type="number" [(ngModel)]="itemAmount" [min]="0" #amount (change)="amount.value = +amount.value < 0 ? '0' : amount.value">
             <button [disabled]="!selectedItem || !amount.value" (click)="addItem(+amount.value)">Add</button>
         </div>
-        <p>This meal is worth {{ calculatedPoints }} points.
+        <p>This meal is worth {{ calculatedPoints }} points.</p>
         <button [disabled]="!items.length" (click)="saveMeal()">Save</button>
         <button (click)="cancel()">Cancel</button>
     `,
     styles: [`
-                .free-item { 
-                    text-decoration-line: line-through;
-                }
-                `],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+        .free-item { 
+            text-decoration-line: line-through;
+        }
+    `],
     standalone: true,
-    imports: [NgFor, AsyncPipe, FormsModule]
+    imports: [NgFor, AsyncPipe, FormsModule],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddMealComponent {
     @Output()
-    meal = new EventEmitter<Meal>();
+    readonly meal = new EventEmitter<Meal>();
 
-    @ViewChild("amount")
     protected itemAmount: number | undefined = 0;
 
     protected set selectedItemName(value: string | undefined) {
@@ -77,6 +76,7 @@ export class AddMealComponent {
         this.calculatedPoints = this.items.reduce((total, curr, index) => {
             let amountToAdd = curr.amount * curr.points;
 
+            // todo sasha: this logic is repeated twice - here and in the meals service. There needs to be a way to consolidate them.
             if (curr.type === MealItemType.Fruit && todaysFruitAmount < 3) {
                 amountToAdd = 0;
                 todaysFruitAmount++;
@@ -89,10 +89,9 @@ export class AddMealComponent {
 
             return total + amountToAdd;
         }, 0);
-           
     };
 
-    protected get items() { 
+    protected get items() {
         return this._items;
     }
 
@@ -105,10 +104,7 @@ export class AddMealComponent {
     protected calculatedPoints: number = 0;
     protected readonly freeItemIndexes = new Set<number>();
 
-    private readonly mealsService = inject(MealsService);
-    protected readonly itemsService = inject(ItemsService);
-
-    constructor() {
+    constructor(private mealsService: MealsService, protected itemsService: ItemsService) {
         this.mealsService.allowedDailyPoints$.pipe(take(1)).subscribe(allowedDailyPoints => this.allowedDailyPoints = allowedDailyPoints);
         this.mealsService.dailyPoints$.pipe(take(1)).subscribe(dailyPoints => this.startingPoints = dailyPoints);
         this.mealsService.usedFreeProteinToday$.pipe(take(1)).subscribe(usedFreeProteinToday => this.usedFreeProteinToday = usedFreeProteinToday);

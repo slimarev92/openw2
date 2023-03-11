@@ -29,14 +29,26 @@ import { MealsService } from "src/app/services/meals.service";
             <oww-add-meal (meal)="saveMeal($event)"></oww-add-meal>
         </ng-template>
     `,
-    styleUrls: ["./daily-overview.component.scss"],
+    styles: [`
+        ul {
+            border: 3px solid black;
+            width: fit-content;
+            padding: 10px;
+            margin-bottom: 10px;
+            
+            > li {
+                width: fit-content;
+                padding: 10px; 
+            }
+        }
+    `],
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         NgFor,
         AsyncPipe,
         AddMealComponent
-    ]
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DailyOverviewComponent {
     readonly mealTypeEnum = MealItemType;
