@@ -64,22 +64,20 @@ export class MealsService {
         let totalPoints = 0;
         let freeProteinUsed = false;
 
-        for (const meal of meals) {
-            for (const item of meal.items) {
-                if (!freeProteinUsed && item.type === MealItemType.Protein) {
-                    freeProteinUsed = true;
-                    
-                    continue;
-                }
-
-                if (item.type === MealItemType.Fruit && freeFruitItems < 3) {
-                    freeFruitItems++;
-
-                    continue;
-                }
-
-                totalPoints += item.amount * item.points;
+        for (const item of meals.flatMap(meal => meal.items)) {
+            if (!freeProteinUsed && item.type === MealItemType.Protein) {
+                freeProteinUsed = true;
+                
+                continue;
             }
+
+            if (item.type === MealItemType.Fruit && freeFruitItems < 3) {
+                freeFruitItems++;
+
+                continue;
+            }
+
+            totalPoints += item.amount * item.points;
         }
 
         return totalPoints;
