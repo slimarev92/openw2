@@ -108,8 +108,8 @@ export class AddMealComponent implements OnInit {
     constructor(private mealsService: MealsService, protected itemsService: ItemsService) {
         this.mealsService.allowedDailyPoints$.pipe(take(1)).subscribe(allowedDailyPoints => this.allowedDailyPoints = allowedDailyPoints);
         this.mealsService.dailyPoints$.pipe(take(1)).subscribe(dailyPoints => this.startingPoints = dailyPoints);
-        this.mealsService.usedFreeProteinToday$.pipe(take(1)).subscribe(usedFreeProteinToday => this.usedFreeProteinToday = usedFreeProteinToday);
-        this.mealsService.todaysFruitAmount$.pipe(take(1)).subscribe(todaysFruitAmount => this.todaysFruitAmount = todaysFruitAmount);
+        this.mealsService.todaysFreeProteinItem$.pipe(take(1)).subscribe(freeItem => this.usedFreeProteinToday = !!freeItem);
+        this.mealsService.todaysFreeFruitItems$.pipe(take(1)).subscribe(freeItems => this.todaysFruitAmount = freeItems.size);
     }
 
     ngOnInit(): void {

@@ -105,14 +105,6 @@ export class MealsService {
         return meals.flatMap(meal => meal.items).find(item => item.type === MealItemType.Protein);
     }));
 
-    public readonly todaysFruitAmount$: Observable<number> = this.dailyMeals$.pipe(map(meals => {
-        return meals.flatMap(meal => meal.items).filter(item => item.type === MealItemType.Fruit).length;
-    }));
-
-    public readonly usedFreeProteinToday$: Observable<boolean> = this.dailyMeals$.pipe(map(meals => {
-        return meals.some(meal => meal.items.some(item => item.type === MealItemType.Protein));
-    }));
-    
     public addMeal(meal: Meal) {
         this.mealsSubject.next([...this.mealsSubject.value, meal]);
     }
