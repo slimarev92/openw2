@@ -4,6 +4,7 @@ import * as dayjs from "dayjs";
 
 import { Meal } from "../models/meal";
 import { MealItemType } from "../models/meal-type";
+import { MealItem } from "../models/meal-item";
 
 @Injectable({
     providedIn: "root"
@@ -85,6 +86,24 @@ export class MealsService {
     }));
 
     public readonly allowedDailyPoints$ = this.allowedDailyPointsSubject.asObservable();
+
+    public readonly todaysFreeFruitItems$: Observable<Set<MealItem>> = this.dailyMeals$.pipe(map(meals => {
+        const dailyItems = meals.flatMap(meal => meal.items);
+
+        const freeItemArray = dailyItems.reduce((freeFruit, currentItem) => {
+            if (freeFruit.length >= 3 || currentItem.type !== MealItemType.Fruit) {
+                return freeFruit;
+            }
+
+            return [...freeFruit, currentItem];
+        }, [] as MealItem[]);
+
+        return new Set(freeItemArray);
+    }));
+
+    public readonly todaysFreeProteinItem$: Observable<MealItem | undefined> = this.dailyMeals$.pipe(map(meals => {
+        return meals.flatMap(meal => meal.items).find(item => item.type === MealItemType.Protein);
+    }));
 
     public readonly todaysFruitAmount$: Observable<number> = this.dailyMeals$.pipe(map(meals => {
         return meals.flatMap(meal => meal.items).filter(item => item.type === MealItemType.Fruit).length;

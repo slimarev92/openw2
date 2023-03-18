@@ -39,11 +39,6 @@ import { MealsService } from "src/app/services/meals.service";
         <button [disabled]="!items.length" (click)="saveMeal()">Save</button>
         <button (click)="cancel()">Cancel</button>
     `,
-    styles: [`
-        .free-item { 
-            text-decoration-line: line-through;
-        }
-    `],
     standalone: true,
     imports: [NgFor, AsyncPipe, FormsModule],
     changeDetection: ChangeDetectionStrategy.OnPush

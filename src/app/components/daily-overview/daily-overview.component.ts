@@ -1,12 +1,13 @@
 
 import { AsyncPipe, NgFor } from "@angular/common";
-import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
 import { Meal } from "src/app/models/meal";
 import { MealItemType } from "src/app/models/meal-type";
 import { DialogService } from "src/app/services/dialog.service";
 import { AddMealComponent } from "src/app/components/add-meal/add-meal.component";
 import { MealsService } from "src/app/services/meals.service";
-import { take } from "rxjs";
+import { Subject, take, takeUntil } from "rxjs";
+import { MealItem } from "src/app/models/meal-item";
 
 @Component({
     selector: "oww-daily-overview",
@@ -20,7 +21,7 @@ import { take } from "rxjs";
             <ul>
                 <li *ngFor="let item of meal.items">
                     <h4>{{item.name}}</h4>
-                    <p>{{item.points}} x {{ item.amount }} = {{ (item.points || 0) * (item.amount || 0) }}</p>
+                    <p>{{item.points}} x {{ item.amount }} = <span [class.free-item]="freeFruitItems.has(item) || freeProteinItem === item">{{ (item.points || 0) * (item.amount || 0) }}</span></p>
                     <p>{{mealTypeEnum[item.type]}}</p>
                 </li>
             </ul>
@@ -51,7 +52,7 @@ import { take } from "rxjs";
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DailyOverviewComponent {
+export class DailyOverviewComponent implements OnDestroy {
     readonly mealTypeEnum = MealItemType;
     readonly today: Date = new Date();
 
@@ -60,8 +61,20 @@ export class DailyOverviewComponent {
 
     protected mealToEdit!: Meal | undefined;
 
+    protected freeFruitItems: Set<MealItem> = new Set<MealItem>();
+    protected freeProteinItem: MealItem | undefined;
+
+    private readonly destroyed = new Subject<void>();
+
     constructor(private dialogService: DialogService, public mealsService: MealsService) {
-        
+        this.mealsService.todaysFreeFruitItems$.pipe(takeUntil(this.destroyed)).subscribe(freeFruitItems => this.freeFruitItems = freeFruitItems);
+        this.mealsService.todaysFreeProteinItem$.pipe(takeUntil(this.destroyed)).subscribe(freeProteinItem => this.freeProteinItem = freeProteinItem);
+
+        this.freeFruitItems.has
+    }
+
+    ngOnDestroy(): void {
+        this.destroyed.next();
     }
 
     addMeal() {
