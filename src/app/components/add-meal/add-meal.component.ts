@@ -1,5 +1,5 @@
 import { AsyncPipe, NgFor } from "@angular/common";
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { take } from "rxjs";
 import { Meal } from "src/app/models/meal";
@@ -28,9 +28,12 @@ import { MealsService } from "src/app/services/meals.service";
                 </option>
             </datalist>
 
-            {{selectedItem?.points}}
+            {{selectedItem?.points ? selectedItem?.points + ' X ' : ''}} 
             <input type="number" [(ngModel)]="itemAmount" [min]="0" #amount (change)="amount.value = +amount.value < 0 ? '0' : amount.value">
-            <button [disabled]="!selectedItem || !amount.value" (click)="addItem(+amount.value)">Add</button>
+            =  {{(selectedItem?.points || 0) * +amount.value}}
+            <div>
+                <button [disabled]="!selectedItem || !amount.value" (click)="addItem(+amount.value)">Add</button>
+            </div>
         </div>
         <p>This meal is worth {{ calculatedPoints }} points.</p>
         <button [disabled]="!items.length" (click)="saveMeal()">Save</button>
@@ -45,9 +48,12 @@ import { MealsService } from "src/app/services/meals.service";
     imports: [NgFor, AsyncPipe, FormsModule],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddMealComponent {
+export class AddMealComponent implements OnInit {
     @Output()
-    readonly meal = new EventEmitter<Meal>();
+    readonly mealChange = new EventEmitter<Meal>();
+
+    @Input()
+    meal!: Meal | undefined;
 
     protected itemAmount: number | undefined = 0;
 
@@ -111,6 +117,12 @@ export class AddMealComponent {
         this.mealsService.todaysFruitAmount$.pipe(take(1)).subscribe(todaysFruitAmount => this.todaysFruitAmount = todaysFruitAmount);
     }
 
+    ngOnInit(): void {
+        if (this.meal) {
+            this.items = structuredClone(this.meal.items);
+        }
+    }
+
     protected addItem(amount: number) {
         if (!this.selectedItem) {
             return;
@@ -128,11 +140,11 @@ export class AddMealComponent {
             items: this.items
         };
 
-        this.meal.emit(meal);
+        this.mealChange.emit(meal);
     }
 
     protected cancel() {
-        this.meal.emit(undefined);
+        this.mealChange.emit(undefined);
     }
 
     protected removeItem(itemIndex: number) {

@@ -97,4 +97,22 @@ export class MealsService {
     public addMeal(meal: Meal) {
         this.mealsSubject.next([...this.mealsSubject.value, meal]);
     }
+
+    public replaceMeal(oldMeal: Meal, replacement: Meal) {
+        const oldMealIndex = this.mealsSubject.value.findIndex(curr => curr === oldMeal);
+
+        if (oldMealIndex === -1) {
+            return;
+        }
+
+        const modifiedMeals = [...this.mealsSubject.value];
+
+        modifiedMeals.splice(oldMealIndex, 1, replacement);
+
+        this.mealsSubject.next(modifiedMeals);
+    }
+
+    public deleteMeal(mealToDelete: Meal) {
+        this.mealsSubject.next(this.mealsSubject.value.filter(curr => curr !== mealToDelete));
+    }
 }

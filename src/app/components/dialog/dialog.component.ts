@@ -34,12 +34,13 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
         });
 
         this.dialogService.close$.pipe(takeUntil(this.destroyed)).subscribe(() => {
+            this.templateToShow = undefined;
             this.dialogElement?.nativeElement.close();
         });
     }
 
     ngAfterViewInit(): void {
-        fromEvent(this.dialogElement.nativeElement, "close").pipe(takeUntil(this.destroyed)).subscribe(() => this.templateToShow = undefined);
+        fromEvent(this.dialogElement.nativeElement, "close").pipe(takeUntil(this.destroyed)).subscribe(() => this.dialogService.closeModal());
     }
 
     ngOnDestroy(): void {
