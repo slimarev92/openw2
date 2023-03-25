@@ -1,9 +1,3 @@
-import { MealItemType } from "./meal-type";
+import { MealItemDescription } from "./meal-item-description";
 
-export type MealItem = {
-    name: string,
-    points: number,
-    type: MealItemType,
-    amount: number
-}
-
+export type MealItem = MealItemDescription & { amount: number };
