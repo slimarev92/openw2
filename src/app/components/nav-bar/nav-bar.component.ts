@@ -1,7 +1,8 @@
 import { NgFor } from "@angular/common";
-import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { RouterLink, Routes } from "@angular/router";
-import { OVERVIEW_ROUTE, RouteWithName, VIEW_ITEMS_ROUTE } from "src/app/routes/routes";
+import { ChangeDetectionStrategy, Component, OnDestroy } from "@angular/core";
+import { ActivatedRoute, NavigationEnd, Route, Router, RouterLink } from "@angular/router";
+import { distinctUntilChanged, filter, skip, Subject, takeUntil } from "rxjs";
+import { OVERVIEW_ROUTE, VIEW_ITEMS_ROUTE } from "src/app/routes/routes";
 
 
 @Component({
@@ -16,7 +17,7 @@ import { OVERVIEW_ROUTE, RouteWithName, VIEW_ITEMS_ROUTE } from "src/app/routes/
                     <ul *ngFor="let route of routes">
                         <li>
                             <a [routerLink]="route.path">
-                                {{route.name}}
+                                {{route.title}}
                             </a>
                         </li>
                     </ul>
@@ -29,10 +30,23 @@ import { OVERVIEW_ROUTE, RouteWithName, VIEW_ITEMS_ROUTE } from "src/app/routes/
     imports: [NgFor, RouterLink],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavBarComponent {
+export class NavBarComponent implements OnDestroy {
     private hiddenRoutes = [OVERVIEW_ROUTE, VIEW_ITEMS_ROUTE]
 
-    protected routes: RouteWithName[] = [];
+    protected routes: Route[] = [];
+
+    private readonly destroyed = new Subject<void>();
+
+    constructor(router: Router) {
+        // todo sasha: find out why this doesn't work with ActivatedRoute.
+        router.events.pipe(takeUntil(this.destroyed), filter(event => event instanceof NavigationEnd), skip(1)).subscribe(e => {
+            this.flipItems();
+        });
+    }
+
+    public ngOnDestroy(): void {
+        this.destroyed.next();
+    }
 
     protected flipItems() {
         const temp = this.hiddenRoutes;
