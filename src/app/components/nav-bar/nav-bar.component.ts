@@ -39,7 +39,7 @@ export class NavBarComponent implements OnDestroy {
 
     constructor(router: Router) {
         // todo sasha: find out why this doesn't work with ActivatedRoute.
-        router.events.pipe(takeUntil(this.destroyed), filter(event => event instanceof NavigationEnd), skip(1)).subscribe(e => {
+        router.events.pipe(takeUntil(this.destroyed), filter(event => event instanceof NavigationEnd), skip(1)).subscribe(() => {
             this.flipItems();
         });
     }
