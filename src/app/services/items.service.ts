@@ -40,4 +40,8 @@ export class ItemsService {
     public createItem(item: MealItemDescription) {
         this.itemDescriptionsSubject.next([...this.itemDescriptionsSubject.value, item]);
     }
+
+    public getItemByName(itemName: string) {
+        return this.itemDescriptionsSubject.value.find(currItem => currItem.name === itemName);
+    }
 }

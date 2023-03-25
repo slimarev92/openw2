@@ -1,4 +1,4 @@
-import { NgFor } from "@angular/common";
+import { AsyncPipe, NgFor } from "@angular/common";
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MealItem } from "src/app/models/meal-item";
@@ -12,7 +12,7 @@ import { ItemsService } from "src/app/services/items.service";
             <input list="items-to-add" [(ngModel)]="selectedItemName">
 
             <datalist id="items-to-add">
-                <option *ngFor="let option of itemsService.itemDescriptions" [value]="option.name" [ngValue]="option">
+                <option *ngFor="let option of itemsService.itemDescriptions$ | async" [value]="option.name" [ngValue]="option">
                         {{option.points}}
                 </option>
             </datalist>
@@ -24,7 +24,7 @@ import { ItemsService } from "src/app/services/items.service";
                 <button [disabled]="!selectedItem || !amount.value" (click)="addItem(+amount.value)">Add</button>
             </div>
     `,
-    imports: [NgFor, FormsModule],
+    imports: [NgFor, FormsModule, AsyncPipe],
     standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -32,7 +32,8 @@ export class AddItemComponent {
     protected set selectedItemName(value: string | undefined) {
         this._selectedItemName = value;
 
-        this.selectedItem = this.itemsService.itemDescriptions.find(i => i.name === this.selectedItemName);
+        // todo sasha: there is a better and more reactive version of this method.
+        this.selectedItem = this.itemsService.getItemByName(this.selectedItemName || "");
     }
 
     protected get selectedItemName() {

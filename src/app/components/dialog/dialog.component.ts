@@ -30,7 +30,10 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
     constructor(private dialogService: DialogService) {
         this.dialogService.show$.pipe(takeUntil(this.destroyed)).subscribe(template => { 
             this.templateToShow = template; 
-            this.dialogElement?.nativeElement.showModal();
+
+            if (!this.dialogElement.nativeElement.open) {
+                this.dialogElement?.nativeElement.showModal();
+            }
         });
 
         this.dialogService.close$.pipe(takeUntil(this.destroyed)).subscribe(() => {
