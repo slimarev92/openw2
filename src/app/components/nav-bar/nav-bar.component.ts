@@ -9,22 +9,22 @@ import { OVERVIEW_ROUTE, VIEW_ITEMS_ROUTE } from "src/app/routes/routes";
     selector: "oww-nav-bar",
     styleUrls: ["./nav-bar.component.scss"],
     template: `
-          <nav>
-                <div class="logo-and-items-container">
-                    <button class="plain-button" (click)="flipItems()">
-                        <img id="app-logo" src="assets/images/logo.jpg">
-                    </button>
-                    <ul *ngFor="let route of routes">
-                        <li>
-                            <a [routerLink]="route.path">
-                                {{route.title}}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+        <nav>
+            <div class="logo-and-items-container">
+                <button class="plain-button" (click)="flipItems()">
+                    <img id="app-logo" src="assets/images/logo.jpg">
+                </button>
+                <ul *ngFor="let route of routes">
+                    <li>
+                        <a [routerLink]="route.path">
+                            {{route.title}}
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
-                <h1>nehama.net</h1>
-            </nav>
+            <h1>nehama.net</h1>
+        </nav>
     `,
     standalone: true,
     imports: [NgFor, RouterLink],

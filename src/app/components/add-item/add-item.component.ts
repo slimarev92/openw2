@@ -9,20 +9,20 @@ import { ItemsService } from "src/app/services/items.service";
 @Component({
     selector: "oww-add-item",
     template: `
-            <input list="items-to-add" [(ngModel)]="selectedItemName">
+        <input list="items-to-add" [(ngModel)]="selectedItemName">
 
-            <datalist id="items-to-add">
-                <option *ngFor="let option of itemsService.itemDescriptions$ | async" [value]="option.name" [ngValue]="option">
-                        {{option.points}}
-                </option>
-            </datalist>
+        <datalist id="items-to-add">
+            <option *ngFor="let option of itemsService.itemDescriptions$ | async" [value]="option.name" [ngValue]="option">
+                    {{option.points}}
+            </option>
+        </datalist>
 
-            {{selectedItem?.points ? selectedItem?.points + ' X ' : ''}} 
-            <input type="number" [(ngModel)]="itemAmount" [min]="0" #amount (change)="amount.value = +amount.value < 0 ? '0' : amount.value">
-            =  {{(selectedItem?.points || 0) * +amount.value}}
-            <div>
-                <button [disabled]="!selectedItem || !amount.value" (click)="addItem(+amount.value)">Add</button>
-            </div>
+        {{selectedItem?.points ? selectedItem?.points + ' X ' : ''}} 
+        <input type="number" [(ngModel)]="itemAmount" [min]="0" #amount (change)="amount.value = +amount.value < 0 ? '0' : amount.value">
+        =  {{(selectedItem?.points || 0) * +amount.value}}
+        <div>
+            <button [disabled]="!selectedItem || !amount.value" (click)="addItem(+amount.value)">Add</button>
+        </div>
     `,
     imports: [NgFor, FormsModule, AsyncPipe],
     standalone: true,

@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from "@angul
 import { Meal } from "src/app/models/meal";
 import { MealItemDescription } from "src/app/models/meal-item-description";
 import { MealItemType } from "src/app/models/meal-type";
-import { ItemsService } from "src/app/services/items.service";
 import { AddMealComponent } from "../add-meal/add-meal.component";
 
 @Component({
