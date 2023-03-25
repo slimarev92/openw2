@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
 // CSS RESET
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
@@ -141,12 +143,17 @@ body {
     font-size: 20px;
 }
 
+h1, h2, h3, h4, h5, h6, a {
+    font-family: 'Comic Neue', cursive;
+}
+
 h1 {
+    font-weight: 700;
     font-size: 3rem;
 }
 
 h2 {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
 }
 
 h1, h2, h3 {
