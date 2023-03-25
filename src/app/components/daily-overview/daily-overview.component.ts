@@ -17,7 +17,7 @@ import { MealItem } from "src/app/models/meal-item";
 
         <ng-container *ngFor="let meal of mealsService.dailyMeals$ | async; let i = index">
             <!-- todo sasha: why to local timestring en-gb? use browser locale instead -->
-            <h3>{{ i + 1}}: {{ meal.time.toLocaleTimeString('en-gb') }} <button (click)="editMeal(meal)">E</button><button (click)="deleteMeal(meal)">X</button></h3>
+            <h3>{{ i + 1}}: {{ meal.time.toLocaleTimeString() }} <button (click)="editMeal(meal)">E</button><button (click)="deleteMeal(meal)">X</button></h3>
             <ul>
                 <li *ngFor="let item of meal.items">
                     <h4>{{item.name}}</h4>

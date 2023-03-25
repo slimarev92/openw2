@@ -6,7 +6,6 @@ export function calculatePointsAndData(items: MealItem[], todaysFruitAmount: num
     const calculatedPoints = items.reduce((total, curr, index) => {
         let amountToAdd = curr.amount * curr.points;
 
-        // todo sasha: this logic is repeated twice - here and in the meals service. There needs to be a way to consolidate them.
         if (curr.type === MealItemType.Fruit && todaysFruitAmount < 3) {
             amountToAdd = 0;
             todaysFruitAmount++;
