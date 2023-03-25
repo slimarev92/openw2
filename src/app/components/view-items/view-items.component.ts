@@ -36,10 +36,10 @@ import { CreateItemComponent } from "../create-item/create-item.component";
 })
 export class ViewItemsComponent {
     @ViewChild("createItem")
-    protected createItemTemplate!: TemplateRef<any>;
+    protected createItemTemplate!: TemplateRef<unknown>;
 
     @ViewChild("nameItem")
-    protected nameItemTemplate!: TemplateRef<any>;
+    protected nameItemTemplate!: TemplateRef<unknown>;
 
     protected itemName = "";
     private createdItem!: MealItemDescription;

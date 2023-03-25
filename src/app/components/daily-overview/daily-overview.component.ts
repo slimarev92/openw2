@@ -57,7 +57,7 @@ export class DailyOverviewComponent implements OnDestroy {
     readonly today: Date = new Date();
 
     @ViewChild("addMealModal")
-    dialogTemplate!: TemplateRef<any>;
+    protected dialogTemplate!: TemplateRef<unknown>;
 
     protected mealToEdit!: Meal | undefined;
 
@@ -69,8 +69,6 @@ export class DailyOverviewComponent implements OnDestroy {
     constructor(private dialogService: DialogService, public mealsService: MealsService) {
         this.mealsService.todaysFreeFruitItems$.pipe(takeUntil(this.destroyed)).subscribe(freeFruitItems => this.freeFruitItems = freeFruitItems);
         this.mealsService.todaysFreeProteinItem$.pipe(takeUntil(this.destroyed)).subscribe(freeProteinItem => this.freeProteinItem = freeProteinItem);
-
-        this.freeFruitItems.has
     }
 
     ngOnDestroy(): void {

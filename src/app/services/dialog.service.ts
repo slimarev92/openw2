@@ -6,7 +6,7 @@ import { Subject } from "rxjs";
 })
 export class DialogService {
     private readonly closeSubject: Subject<void> = new Subject();
-    private readonly showSubject: Subject<TemplateRef<any>> = new Subject();
+    private readonly showSubject: Subject<TemplateRef<unknown>> = new Subject();
 
     readonly close$ = this.closeSubject.asObservable();
     readonly show$ = this.showSubject.asObservable();
@@ -15,7 +15,7 @@ export class DialogService {
         this.closeSubject.next();
     }
 
-    showModal(template: TemplateRef<any>) {
+    showModal(template: TemplateRef<unknown>) {
         this.showSubject.next(template);
     }
 }

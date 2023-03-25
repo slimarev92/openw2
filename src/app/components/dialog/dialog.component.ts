@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
 import { fromEvent, Subject, takeUntil } from "rxjs";
 import { DialogService } from "src/app/services/dialog.service";
 
@@ -22,10 +22,10 @@ import { DialogService } from "src/app/services/dialog.service";
 export class DialogComponent implements AfterViewInit, OnDestroy {
     private readonly destroyed: Subject<void> = new Subject();
 
-    templateToShow: TemplateRef<any> | undefined;
+    public templateToShow: TemplateRef<unknown> | undefined;
 
     @ViewChild("dialog", { read: ElementRef })
-    dialogElement!: ElementRef<HTMLDialogElement>;
+    protected dialogElement!: ElementRef<HTMLDialogElement>;
 
     constructor(private dialogService: DialogService) {
         this.dialogService.show$.pipe(takeUntil(this.destroyed)).subscribe(template => { 
