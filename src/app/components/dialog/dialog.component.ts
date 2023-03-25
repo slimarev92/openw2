@@ -12,8 +12,12 @@ import { DialogService } from "src/app/services/dialog.service";
         <ng-template #blank></ng-template>
     `,
     styles: [
-        `dialog::backdrop {
-            background: rgba(0, 0, 0, 0.6);
+        `dialog {
+            border: none;
+            
+            &::backdrop {
+                background-color: rgba(0, 0, 0, 0.6);
+            }
          }`
     ],
     standalone: true,
