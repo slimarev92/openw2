@@ -2,12 +2,15 @@ import { AsyncPipe, NgFor } from "@angular/common";
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { take } from "rxjs";
+
 import { Meal } from "src/app/models/meal";
 import { MealItem } from "src/app/models/meal-item";
 import { MealItemDescription } from "src/app/models/meal-item-description";
 import { MealItemType } from "src/app/models/meal-type";
 import { ItemsService } from "src/app/services/items.service";
 import { MealsService } from "src/app/services/meals.service";
+import { AddItemComponent } from "src/app/components/add-item/add-item.component";
+import { calculatePointsAndData as calculatePointsAndFreeItems } from "src/app/utils/utils";
 
 @Component({
     selector: "oww-add-meal",
@@ -18,29 +21,15 @@ import { MealsService } from "src/app/services/meals.service";
                 <button (click)="removeItem(i)">X</button>
             </li>
         </ul>
-        <!-- toto sasha: make add-item a component! -->
-        <div class="add-item">
-            <input list="items-to-add" [(ngModel)]="selectedItemName">
 
-            <datalist id="items-to-add">
-                <option *ngFor="let option of itemsService.itemDescriptions" [value]="option.name" [ngValue]="option">
-                         {{option.points}}
-                </option>
-            </datalist>
+        <oww-add-item (item)="addItem($event)"></oww-add-item>
 
-            {{selectedItem?.points ? selectedItem?.points + ' X ' : ''}} 
-            <input type="number" [(ngModel)]="itemAmount" [min]="0" #amount (change)="amount.value = +amount.value < 0 ? '0' : amount.value">
-            =  {{(selectedItem?.points || 0) * +amount.value}}
-            <div>
-                <button [disabled]="!selectedItem || !amount.value" (click)="addItem(+amount.value)">Add</button>
-            </div>
-        </div>
         <p>This meal is worth {{ calculatedPoints }} points.</p>
         <button [disabled]="!items.length" (click)="saveMeal()">Save</button>
         <button (click)="cancel()">Cancel</button>
     `,
     standalone: true,
-    imports: [NgFor, AsyncPipe, FormsModule],
+    imports: [NgFor, AsyncPipe, FormsModule, AddItemComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddMealComponent implements OnInit {
@@ -50,46 +39,13 @@ export class AddMealComponent implements OnInit {
     @Input()
     meal!: Meal | undefined;
 
-    protected itemAmount: number | undefined = 0;
-
-    protected set selectedItemName(value: string | undefined) {
-        this._selectedItemName = value;
-
-        this.selectedItem = this.itemsService.itemDescriptions.find(i => i.name === this.selectedItemName);
-    }
-
-    protected get selectedItemName() {
-        return this._selectedItemName;
-    }
-
-    private _selectedItemName: string | undefined = "";
-
-    protected selectedItem: MealItemDescription | undefined;
-
     protected set items(value: MealItem[]) {
         this._items = value;
 
-        this.freeItemIndexes.clear();
+        const [totalPoints, freeItemIndexes] = calculatePointsAndFreeItems(this.items, this.todaysFruitAmount, this.usedFreeProteinToday);
 
-        let todaysFruitAmount = this.todaysFruitAmount;
-        let usedFreeProteinToday = this.usedFreeProteinToday;
-
-        this.calculatedPoints = this.items.reduce((total, curr, index) => {
-            let amountToAdd = curr.amount * curr.points;
-
-            // todo sasha: this logic is repeated twice - here and in the meals service. There needs to be a way to consolidate them.
-            if (curr.type === MealItemType.Fruit && todaysFruitAmount < 3) {
-                amountToAdd = 0;
-                todaysFruitAmount++;
-                this.freeItemIndexes.add(index);
-            } else if (curr.type === MealItemType.Protein && !usedFreeProteinToday) {
-                usedFreeProteinToday = true;
-                this.freeItemIndexes.add(index);
-                amountToAdd = 0;
-            }
-
-            return total + amountToAdd;
-        }, 0);
+        this.calculatedPoints = totalPoints;
+        this.freeItemIndexes = freeItemIndexes;
     };
 
     protected get items() {
@@ -103,7 +59,7 @@ export class AddMealComponent implements OnInit {
     protected usedFreeProteinToday: boolean = false;
     protected todaysFruitAmount: number = 0;
     protected calculatedPoints: number = 0;
-    protected readonly freeItemIndexes = new Set<number>();
+    protected freeItemIndexes = new Set<number>();
 
     constructor(private mealsService: MealsService, protected itemsService: ItemsService) {
         this.mealsService.allowedDailyPoints$.pipe(take(1)).subscribe(allowedDailyPoints => this.allowedDailyPoints = allowedDailyPoints);
@@ -118,14 +74,12 @@ export class AddMealComponent implements OnInit {
         }
     }
 
-    protected addItem(amount: number) {
-        if (!this.selectedItem) {
+    protected addItem(item: MealItem) {
+        if (!item) {
             return;
         }
 
-        this.items = [...this.items, { ...this.selectedItem, amount }];
-        this.selectedItemName = undefined;
-        this.itemAmount = undefined;
+        this.items = [...this.items, item];
     }
 
     protected saveMeal() {

@@ -5,6 +5,7 @@ import * as dayjs from "dayjs";
 import { Meal } from "../models/meal";
 import { MealItemType } from "../models/meal-type";
 import { MealItem } from "../models/meal-item";
+import { calculatePointsAndData } from "src/app/utils/utils";
 
 @Injectable({
     providedIn: "root"
@@ -60,25 +61,7 @@ export class MealsService {
     }));
 
     public readonly dailyPoints$: Observable<number> = this.dailyMeals$.pipe(map(meals => {
-        let freeFruitItems = 0;
-        let totalPoints = 0;
-        let freeProteinUsed = false;
-
-        for (const item of meals.flatMap(meal => meal.items)) {
-            if (!freeProteinUsed && item.type === MealItemType.Protein) {
-                freeProteinUsed = true;
-                
-                continue;
-            }
-
-            if (item.type === MealItemType.Fruit && freeFruitItems < 3) {
-                freeFruitItems++;
-
-                continue;
-            }
-
-            totalPoints += item.amount * item.points;
-        }
+        const [totalPoints, _] = calculatePointsAndData(meals.flatMap(meal => meal.items), 0, false);
 
         return totalPoints;
     }));
