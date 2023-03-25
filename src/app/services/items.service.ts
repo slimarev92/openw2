@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { from } from "rxjs";
+import { BehaviorSubject, from } from "rxjs";
 
 import { MealItemDescription } from "../models/meal-item-description";
 import { MealItemType } from "../models/meal-type";
@@ -32,6 +32,12 @@ export class ItemsService {
         }
     ];
 
-    // todo sasha: make this work
-    public itemDescriptions$ = from([...this.itemDescriptions]);
+    private readonly itemDescriptionsSubject = new BehaviorSubject<MealItemDescription[]>([...this.itemDescriptions]);
+
+    // todo sasha: make this work for real
+    public itemDescriptions$ = this.itemDescriptionsSubject.asObservable();
+
+    public createItem(item: MealItemDescription) {
+        this.itemDescriptionsSubject.next([...this.itemDescriptionsSubject.value, item]);
+    }
 }

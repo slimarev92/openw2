@@ -160,3 +160,8 @@ button {
 .free-item { 
     text-decoration-line: line-through;
 }
+
+.plain-button {
+    background: unset;
+    border: none;
+}

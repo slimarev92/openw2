@@ -5,8 +5,6 @@ import { take } from "rxjs";
 
 import { Meal } from "src/app/models/meal";
 import { MealItem } from "src/app/models/meal-item";
-import { MealItemDescription } from "src/app/models/meal-item-description";
-import { MealItemType } from "src/app/models/meal-type";
 import { ItemsService } from "src/app/services/items.service";
 import { MealsService } from "src/app/services/meals.service";
 import { AddItemComponent } from "src/app/components/add-item/add-item.component";
@@ -17,7 +15,7 @@ import { calculatePointsAndData as calculatePointsAndFreeItems } from "src/app/u
     template: `
         <ul>
             <li *ngFor="let item of items; let i = index">
-                {{item.name}}: {{item.points}} x {{item.amount}} = <span [class.free-item]="freeItemIndexes.has(i)">{{item.amount * item.points}}</span>
+                {{item.name}}: {{item.points}} x {{item.amount}} = <span [class.free-item]="freeItemsEnabled && freeItemIndexes.has(i)">{{item.amount * item.points}}</span>
                 <button (click)="removeItem(i)">X</button>
             </li>
         </ul>
@@ -39,10 +37,16 @@ export class AddMealComponent implements OnInit {
     @Input()
     meal!: Meal | undefined;
 
+    @Input()
+    freeItemsEnabled = true;
+
     protected set items(value: MealItem[]) {
         this._items = value;
 
-        const [totalPoints, freeItemIndexes] = calculatePointsAndFreeItems(this.items, this.todaysFruitAmount, this.usedFreeProteinToday);
+        const startingFruitAmount = this.freeItemsEnabled ? this.todaysFruitAmount : 3;
+        const usedFreeProteinToday = this.freeItemsEnabled && this.usedFreeProteinToday;
+
+        const [totalPoints, freeItemIndexes] = calculatePointsAndFreeItems(this.items, startingFruitAmount, usedFreeProteinToday);
 
         this.calculatedPoints = totalPoints;
         this.freeItemIndexes = freeItemIndexes;

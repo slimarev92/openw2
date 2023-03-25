@@ -1,5 +1,5 @@
 import { NgFor } from "@angular/common";
-import { Component, EventEmitter, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MealItem } from "src/app/models/meal-item";
 
@@ -25,7 +25,8 @@ import { ItemsService } from "src/app/services/items.service";
             </div>
     `,
     imports: [NgFor, FormsModule],
-    standalone: true
+    standalone: true,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddItemComponent {
     protected set selectedItemName(value: string | undefined) {
