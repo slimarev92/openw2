@@ -1,4 +1,4 @@
-  import { Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { DailyOverviewComponent } from "./components/daily-overview/daily-overview.component";
 import { DialogComponent } from "./components/dialog/dialog.component";

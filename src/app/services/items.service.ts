@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, from } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
 import { MealItemDescription } from "../models/meal-item-description";
 import { MealItemType } from "../models/meal-type";

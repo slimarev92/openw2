@@ -1,4 +1,4 @@
-import { Route, RouterHashLocationFeature, Routes } from "@angular/router";
+import { Route, Routes } from "@angular/router";
 import { DailyOverviewComponent } from "../components/daily-overview/daily-overview.component";
 import { ViewItemsComponent } from "../components/view-items/view-items.component";
 
