@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, map, Observable } from "rxjs";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs/esm";
 
 import { Meal } from "../models/meal";
 import { MealItemType } from "../models/meal-type";

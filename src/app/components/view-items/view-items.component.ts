@@ -26,8 +26,8 @@ import { CreateItemComponent } from "../create-item/create-item.component";
         </ng-template>
 
         <ng-template #nameItem>
-            Please select name for item: <input [(ngModel)]="itemName">
-            <button (click)="onItemNamed()">Save new Item</button>
+            Please select a name for the new item: <input [(ngModel)]="itemName">
+            <button (click)="onItemNamed()">Save new Item</button><button (click)="cancel()">Cancel</button>
         </ng-template>
     `,
     standalone: true,
@@ -74,6 +74,11 @@ export class ViewItemsComponent {
         this.createdItem.name = this.itemName;
 
         this.itemsService.createItem(this.createdItem);
+
+        this.dialogService.closeModal();
+    }
+
+    cancel() {
         this.dialogService.closeModal();
     }
 }
