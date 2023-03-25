@@ -31,7 +31,7 @@ import { OVERVIEW_ROUTE, VIEW_ITEMS_ROUTE } from "src/app/routes/routes";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavBarComponent implements OnDestroy {
-    private hiddenRoutes = [OVERVIEW_ROUTE, VIEW_ITEMS_ROUTE]
+    private hiddenRoutes = [OVERVIEW_ROUTE, VIEW_ITEMS_ROUTE];
 
     protected routes: Route[] = [];
 

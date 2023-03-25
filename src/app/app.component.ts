@@ -6,7 +6,7 @@ import { NavBarComponent } from "./components/nav-bar/nav-bar.component";
 
 
 @Component({
-    selector: 'app-root',
+    selector: "app-root",
     template: `
       <oww-nav-bar></oww-nav-bar>
 
@@ -14,7 +14,7 @@ import { NavBarComponent } from "./components/nav-bar/nav-bar.component";
 
       <oww-dialog></oww-dialog>
     `,
-    styleUrls: ['./app.component.scss'],
+    styleUrls: ["./app.component.scss"],
     standalone: true,
     imports: [RouterOutlet, DailyOverviewComponent, DialogComponent, NavBarComponent]
 })

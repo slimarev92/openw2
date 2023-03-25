@@ -35,10 +35,10 @@ export class AddMealComponent implements OnInit {
     readonly mealChange = new EventEmitter<Meal>();
 
     @Input()
-    meal!: Meal | undefined;
+    public meal!: Meal | undefined;
 
     @Input()
-    freeItemsEnabled = true;
+    public freeItemsEnabled = true;
 
     protected set items(value: MealItem[]) {
         this._items = value;
@@ -50,7 +50,7 @@ export class AddMealComponent implements OnInit {
 
         this.calculatedPoints = totalPoints;
         this.freeItemIndexes = freeItemIndexes;
-    };
+    }
 
     protected get items() {
         return this._items;
@@ -58,11 +58,11 @@ export class AddMealComponent implements OnInit {
 
     private _items: MealItem[] = [];
 
-    protected startingPoints: number = 0;
-    protected allowedDailyPoints: number = 0;
-    protected usedFreeProteinToday: boolean = false;
-    protected todaysFruitAmount: number = 0;
-    protected calculatedPoints: number = 0;
+    protected startingPoints = 0;
+    protected allowedDailyPoints = 0;
+    protected usedFreeProteinToday = false;
+    protected todaysFruitAmount = 0;
+    protected calculatedPoints = 0;
     protected freeItemIndexes = new Set<number>();
 
     constructor(private mealsService: MealsService, protected itemsService: ItemsService) {
