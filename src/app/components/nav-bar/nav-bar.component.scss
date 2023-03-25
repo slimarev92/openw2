@@ -13,3 +13,11 @@ h1 {
     line-height: 100px;
     font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 }
+
+a {
+    color: inherit;
+
+    &:visited {
+        color: inherit;
+    }
+}

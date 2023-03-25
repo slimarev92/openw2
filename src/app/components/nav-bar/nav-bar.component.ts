@@ -1,5 +1,7 @@
 import { NgFor } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { RouterLink, Routes } from "@angular/router";
+import { OVERVIEW_ROUTE, RouteWithName, VIEW_ITEMS_ROUTE } from "src/app/routes/routes";
 
 
 @Component({
@@ -11,25 +13,31 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
                     <button class="plain-button" (click)="flipItems()">
                         <img id="app-logo" src="assets/images/logo.jpg">
                     </button>
-                    <div *ngFor="let item of navItems">{{item}}</div>
+                    <ul *ngFor="let route of routes">
+                        <li>
+                            <a [routerLink]="route.path">
+                                {{route.name}}
+                            </a>
+                        </li>
+                    </ul>
                 </div>
 
                 <h1>nehama.net</h1>
             </nav>
     `,
     standalone: true,
-    imports: [NgFor],
+    imports: [NgFor, RouterLink],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavBarComponent {
-    private hiddenNavItems = ["items", "settings"]
+    private hiddenRoutes = [OVERVIEW_ROUTE, VIEW_ITEMS_ROUTE]
 
-    protected navItems: string[] = [];
+    protected routes: RouteWithName[] = [];
 
     protected flipItems() {
-        const temp = this.hiddenNavItems;
+        const temp = this.hiddenRoutes;
 
-        this.hiddenNavItems = this.navItems;
-        this.navItems = temp;
+        this.hiddenRoutes = this.routes;
+        this.routes = temp;
     }
 }

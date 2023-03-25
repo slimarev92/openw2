@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, ElementRef, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
 import { fromEvent, Subject, takeUntil } from "rxjs";
 import { DialogService } from "src/app/services/dialog.service";
 
