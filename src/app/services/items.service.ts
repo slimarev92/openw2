@@ -2,31 +2,8 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, take } from "rxjs";
 
 import { MealItemDescription } from "../models/meal-item-description";
-import { MealItemType } from "../models/meal-type";
 import { DbService } from "./db.service";
 
-const ITEM_DESCRIPTIONS: MealItemDescription[] = [
-    {
-        name: "Hummus",
-        type: MealItemType.Protein, 
-        points: 10
-    },
-    {
-        name: "Hummus2",
-        type: MealItemType.Protein, 
-        points: 10
-    },
-    {
-        name: "Apple",
-        type: MealItemType.Fruit, 
-        points: 5
-    },
-    {
-        name: "Loaf of bread",
-        type: MealItemType.Regular, 
-        points: 2
-    }
-];
 
 @Injectable({
     providedIn: "root"
@@ -38,18 +15,27 @@ export class ItemsService {
 
     constructor(private dbService: DbService) {
         dbService.db$.pipe(take(1)).subscribe(async db => {
-            const tx = db.transaction("items", "readwrite");
-            const store = tx.store;
+            let store = db.transaction("items", "readwrite").store;
             const itemsCount = await store.count();
 
             if (!itemsCount) {
-                await Promise.all(ITEM_DESCRIPTIONS.map(id => store.add(id)));
+                const allItems = await this.fetchItems();
+
+                store = db.transaction("items", "readwrite").store;
+
+                await Promise.all(allItems.map(item => store.add(item)));
             }
             
             const allItems = await store.getAll();
 
             this.itemDescriptionsSubject.next(allItems);
         });
+    }
+
+    private async fetchItems(): Promise<MealItemDescription[]> {
+        const res = await fetch("/api/items");
+
+        return await res.json();
     }
 
     public createItem(item: MealItemDescription) {
