@@ -1,6 +1,5 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { MealItemDescription } from "src/app/models/meal-item-description";
-import { MealItemType } from "src/app/models/meal-type";
+import { MealItemDescription } from "../src/app/models/meal-item-description";
+import { MealItemType } from "../src/app/models/meal-type";
 
 const ITEM_DESCRIPTIONS: MealItemDescription[] = [
     {
