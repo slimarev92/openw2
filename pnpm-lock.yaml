@@ -17,6 +17,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.56.0
   dayjs: ^1.11.7
   eslint: ^8.36.0
+  idb: ^7.1.1
   jasmine-core: ~4.5.0
   karma: ~6.4.0
   karma-chrome-launcher: ~3.1.0
@@ -38,6 +39,7 @@ dependencies:
   '@angular/platform-browser-dynamic': 15.1.0_bjmxt24dowfhcklhftsg4zga3a
   '@angular/router': 15.1.0_shtnd5whtbyicxnxmafd6uxkza
   dayjs: 1.11.7
+  idb: 7.1.1
   rxjs: 7.8.0
   tslib: 2.4.1
   zone.js: 0.12.0
@@ -4275,6 +4277,10 @@ packages:
     dependencies:
       postcss: 8.4.21
     dev: true
+
+  /idb/7.1.1:
+    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
+    dev: false
 
   /ieee754/1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}

@@ -1,6 +1,6 @@
 
 import { AsyncPipe, NgFor } from "@angular/common";
-import { ChangeDetectionStrategy, Component, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
 import { Meal } from "src/app/models/meal";
 import { MealItemType } from "src/app/models/meal-type";
 import { DialogService } from "src/app/services/dialog.service";
@@ -8,6 +8,7 @@ import { AddMealComponent } from "src/app/components/add-meal/add-meal.component
 import { MealsService } from "src/app/services/meals.service";
 import { Subject, take, takeUntil } from "rxjs";
 import { MealItem } from "src/app/models/meal-item";
+import { ItemsService } from "src/app/services/items.service";
 
 @Component({
     selector: "oww-daily-overview",
@@ -66,6 +67,9 @@ export class DailyOverviewComponent implements OnDestroy {
 
     private readonly destroyed = new Subject<void>();
 
+    // TODO SASHA: This is injected do the service is created and the items are populated. There should be a more elegant way.
+    private _ = inject(ItemsService);
+    
     constructor(private dialogService: DialogService, public mealsService: MealsService) {
         this.mealsService.todaysFreeFruitItems$.pipe(takeUntil(this.destroyed)).subscribe(freeFruitItems => this.freeFruitItems = freeFruitItems);
         this.mealsService.todaysFreeProteinItem$.pipe(takeUntil(this.destroyed)).subscribe(freeProteinItem => this.freeProteinItem = freeProteinItem);
@@ -94,6 +98,9 @@ export class DailyOverviewComponent implements OnDestroy {
         if (mealToEdit) {
             this.mealsService.replaceMeal(mealToEdit, meal);
         } else {
+            // TODO sasha: add proper way of naming a meal.
+            meal.name = Math.random() + "";
+
             this.mealsService.addMeal(meal);
         }
     }

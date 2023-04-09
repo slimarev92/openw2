@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, map, Observable } from "rxjs";
+import { BehaviorSubject, map, Observable, take } from "rxjs";
 import dayjs from "dayjs/esm";
 
 import { Meal } from "../models/meal";
 import { MealItemType } from "../models/meal-type";
 import { MealItem } from "../models/meal-item";
 import { calculatePointsAndData } from "src/app/utils/utils";
+import { DbService } from "./db.service";
 
 @Injectable({
     providedIn: "root"
@@ -50,12 +51,12 @@ export class MealsService {
         },
     ];
 
-    private readonly mealsSubject = new BehaviorSubject<Meal[]>(this.meals);
+    private readonly mealsSubject = new BehaviorSubject<Meal[]>([]);
 
     private readonly allowedDailyPointsSubject = new BehaviorSubject<number>(26);
 
     public readonly dailyMeals$: Observable<Meal[]> = this.mealsSubject.pipe(map(meals => {
-        const today = dayjs().startOf('d');
+        const today = dayjs().startOf("d");
 
         return meals.filter(meal => dayjs(meal.time).isAfter(today));
     }));
@@ -86,25 +87,78 @@ export class MealsService {
         return meals.flatMap(meal => meal.items).find(item => item.type === MealItemType.Protein);
     }));
 
+    constructor(private dbService: DbService) {
+        this.dbService.db$.pipe(take(1)).subscribe(async db => {
+            const store = db.transaction("meals").store;
+
+            let allMeals: Meal[] = [];
+
+            try {
+                allMeals = await store.getAll();
+
+                this.mealsSubject.next(allMeals);
+            } catch (e) {
+                console.error(`Can't get all meals from db due to error: ${e}`);
+            }
+        });
+    }
+
     public addMeal(meal: Meal) {
-        this.mealsSubject.next([...this.mealsSubject.value, meal]);
+        this.dbService.db$.pipe(take(1)).subscribe(async db => {
+            const tx = db.transaction("meals", "readwrite");
+            const store = tx.store;
+
+            try {
+                await store.add(meal);
+
+                this.mealsSubject.next([...this.mealsSubject.value, meal]);
+            } catch (e) {
+                console.error(`Can't add item to db due to error: ${e}`);
+            }
+        });
     }
 
     public replaceMeal(oldMeal: Meal, replacement: Meal) {
-        const oldMealIndex = this.mealsSubject.value.findIndex(curr => curr === oldMeal);
+        this.dbService.db$.pipe(take(1)).subscribe(async db => {
+            try {
+                const store = db.transaction("meals", "readwrite").store;
 
-        if (oldMealIndex === -1) {
-            return;
-        }
+                await store.put(replacement);
 
-        const modifiedMeals = [...this.mealsSubject.value];
+            } catch (e) {
+                console.log(`Can't replace meal due to error: ${e}`);
 
-        modifiedMeals.splice(oldMealIndex, 1, replacement);
+                return;
+            }
 
-        this.mealsSubject.next(modifiedMeals);
+            const oldMealIndex = this.mealsSubject.value.findIndex(curr => curr === oldMeal);
+
+            if (oldMealIndex === -1) {
+                return;
+            }
+    
+            const modifiedMeals = [...this.mealsSubject.value];
+    
+            modifiedMeals.splice(oldMealIndex, 1, replacement);
+    
+            this.mealsSubject.next(modifiedMeals);
+        });
     }
 
     public deleteMeal(mealToDelete: Meal) {
-        this.mealsSubject.next(this.mealsSubject.value.filter(curr => curr !== mealToDelete));
+        this.dbService.db$.pipe(take(1)).subscribe(async db => {
+            try {
+                const store = db.transaction("meals", "readwrite").store;
+
+                await store.delete(mealToDelete.name);
+
+            } catch (e) {
+                console.log(`Can't delete meal due to error: ${e}`);
+
+                return;
+            }
+
+            this.mealsSubject.next(this.mealsSubject.value.filter(curr => curr !== mealToDelete));
+        });
     }
 }
