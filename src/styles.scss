@@ -140,23 +140,32 @@ table {
 
 $app-font: 'Comic Neue', cursive;
 
+@media (max-width: 1250px) {
+    html {
+        font-size: 16px;
+    }
 
-html {
-    font-size: 20px;
-    
-    @media (max-width: 1250px) {
-        font-size: 10px;
+    h1 {
+        font-weight: 700;
+        font-size: 2rem;
+    }
+}
+
+// todo sasha: find a better way than this "if...else"
+@media (min-width: 1251px) {
+    html {
+        font-size: 20px;
+    }
+
+    h1 {
+        font-weight: 700;
+        font-size: 3rem;
     }
 }
 
 body {
     padding: 1rem;
     font-family: $app-font;
-}
-
-h1 {
-    font-weight: 700;
-    font-size: 4rem;
 }
 
 h2 {
