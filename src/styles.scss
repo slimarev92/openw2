@@ -138,13 +138,13 @@ table {
 
 // END OF CSS RESET
 
-body {
-    padding: 30px;
-    font-size: 20px;
-}
+$app-font: 'Comic Neue', cursive;
 
-* {
-    font-family: 'Comic Neue', cursive;
+
+body {
+    padding: 1rem;
+    font-size: 20px;
+    font-family: $app-font;
 }
 
 h1 {
@@ -161,6 +161,7 @@ h1, h2, h3 {
 }
 
 button {
+    font-family: $app-font;
     font-size: 1.25rem;
 }
 
