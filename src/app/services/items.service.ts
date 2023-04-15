@@ -19,7 +19,7 @@ export class ItemsService {
             const itemsCount = await store.count();
 
             if (!itemsCount) {
-                const allItems = await this.fetchItems();
+                const allItems = await this.importItems();
 
                 store = db.transaction("items", "readwrite").store;
 
@@ -32,10 +32,10 @@ export class ItemsService {
         });
     }
 
-    private async fetchItems(): Promise<MealItemDescription[]> {
-        const res = await fetch("/api/items");
+    private async importItems(): Promise<MealItemDescription[]> {
+        const itemsModule = await import("src/app/data/initial-items");
 
-        return await res.json();
+        return itemsModule.ITEM_DESCRIPTIONS;
     }
 
     public createItem(item: MealItemDescription) {
