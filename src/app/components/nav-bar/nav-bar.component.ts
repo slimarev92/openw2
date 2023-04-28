@@ -4,7 +4,6 @@ import { NavigationEnd, Route, Router, RouterLink } from "@angular/router";
 import { filter, skip, Subject, takeUntil } from "rxjs";
 import { OVERVIEW_ROUTE, VIEW_ITEMS_ROUTE } from "src/app/routes/routes";
 
-
 @Component({
     selector: "oww-nav-bar",
     styleUrls: ["./nav-bar.component.scss"],
