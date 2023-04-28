@@ -67,9 +67,6 @@ export class DailyOverviewComponent implements OnDestroy {
 
     private readonly destroyed = new Subject<void>();
 
-    // TODO SASHA: This is injected do the service is created and the items are populated. There should be a more elegant way.
-    private _ = inject(ItemsService);
-    
     constructor(private dialogService: DialogService, public mealsService: MealsService) {
         this.mealsService.todaysFreeFruitItems$.pipe(takeUntil(this.destroyed)).subscribe(freeFruitItems => this.freeFruitItems = freeFruitItems);
         this.mealsService.todaysFreeProteinItem$.pipe(takeUntil(this.destroyed)).subscribe(freeProteinItem => this.freeProteinItem = freeProteinItem);

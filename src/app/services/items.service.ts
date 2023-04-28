@@ -11,7 +11,7 @@ import { DbService } from "./db.service";
 export class ItemsService {
     private readonly itemDescriptionsSubject = new BehaviorSubject<MealItemDescription[]>([]);
 
-    public itemDescriptions$ = this.itemDescriptionsSubject.asObservable();
+    public readonly itemDescriptions$ = this.itemDescriptionsSubject.asObservable();
 
     constructor(private dbService: DbService) {
         dbService.db$.pipe(take(1)).subscribe(async db => {
