@@ -43,7 +43,7 @@ export class AddItemComponent {
 
     protected enteredTextSubject = new Subject<string>();
 
-    protected filteredDescriptions$ = combineLatest([this.enteredTextSubject, this.itemsService.itemDescriptions$]).pipe(
+    protected filteredDescriptions$ = combineLatest([this.enteredTextSubject.pipe(map(text => text.toLowerCase())), this.itemsService.itemDescriptions$]).pipe(
         // TODO SASHA: make this more performant and possible better formatted?
         map(
             ([filterText, items]) => items.filter(i => i.name.toLowerCase().startsWith(filterText)).map(i => ({itemText: `${i.name} (${i.points})`, ...i}))
