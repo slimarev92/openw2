@@ -1,6 +1,6 @@
 
-import { AsyncPipe, NgFor } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
+import { AsyncPipe, DatePipe, NgFor } from "@angular/common";
+import { ChangeDetectionStrategy, Component, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
 import { Meal } from "src/app/models/meal";
 import { MealItemType } from "src/app/models/meal-type";
 import { DialogService } from "src/app/services/dialog.service";
@@ -8,12 +8,11 @@ import { AddMealComponent } from "src/app/components/add-meal/add-meal.component
 import { MealsService } from "src/app/services/meals.service";
 import { Subject, take, takeUntil } from "rxjs";
 import { MealItem } from "src/app/models/meal-item";
-import { ItemsService } from "src/app/services/items.service";
 
 @Component({
     selector: "oww-daily-overview",
     template: `
-        <h2>Today's Overview - {{today.toLocaleDateString('en-gb')}} - {{mealsService.dailyPoints$ | async}} Points</h2>
+        <h2>Today's Overview - {{today | date: 'shortDate'}} - {{mealsService.dailyPoints$ | async}} Points</h2>
         <button (click)="addMeal()">Add Meal</button>
 
         <ng-container *ngFor="let meal of mealsService.dailyMeals$ | async; let i = index">
@@ -49,7 +48,8 @@ import { ItemsService } from "src/app/services/items.service";
     imports: [
         NgFor,
         AsyncPipe,
-        AddMealComponent
+        AddMealComponent,
+        DatePipe
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
