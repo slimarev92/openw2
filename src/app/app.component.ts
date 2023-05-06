@@ -20,4 +20,8 @@ import { AppLanguageService } from "./services/app-language.service";
 })
 export class AppComponent { 
     protected appDirection = inject(AppLanguageService).getAppTextDirection();
+
+    constructor() {
+        console.log($localize `:@@Overview:Overview`);
+    }
 }

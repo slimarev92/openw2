@@ -1,0 +1,18 @@
+{
+  "locale": "en-US",
+  "translations": {
+    "Overview": "Overview",
+    "3249513483374643425": "Add",
+    "6197844294375005336": "This meal is worth {$INTERPOLATION} points.",
+    "3768927257183755959": "Save",
+    "2159130950882492111": "Cancel",
+    "3994146861744956961": "Today's Overview - {$INTERPOLATION} - {$INTERPOLATION_1} Points",
+    "1561594206238588053": "Add Meal",
+    "7425779125383586079": "nehama.net",
+    "5247647891139349118": "All Items",
+    "7018341208442424510": "Create Item",
+    "7083560295977587600": "Please select a name for the new item:",
+    "1206688355710911768": "Save new Item",
+    "2614607010577950577": "Overview"
+  }
+}

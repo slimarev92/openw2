@@ -13,8 +13,8 @@ import { MealItem } from "src/app/models/meal-item";
 @Component({
     selector: "oww-daily-overview",
     template: `
-        <h2>Today's Overview - {{today | date: 'shortDate'}} - {{mealsService.dailyPoints$ | async}} Points</h2>
-        <button (click)="addMeal()">Add Meal</button>
+        <h2 i18n>Today's Overview - {{today | date: 'shortDate'}} - {{mealsService.dailyPoints$ | async}} Points</h2>
+        <button (click)="addMeal()" i18n>Add Meal</button>
 
         <ng-container *ngFor="let meal of mealsService.dailyMeals$ | async; let i = index">
             <!-- todo sasha: why to local timestring en-gb? use browser locale instead -->

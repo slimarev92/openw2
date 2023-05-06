@@ -25,7 +25,7 @@ import { Subject, combineLatest, map } from "rxjs";
 
         =  {{(selectedItem?.points || 0) * +amount.value}}
         <div>
-            <button [disabled]="!selectedItem || !amount.value" (click)="addItem(+amount.value)">Add</button>
+            <button [disabled]="!selectedItem || !amount.value" (click)="addItem(+amount.value)" i18n>Add</button>
         </div>
     `,
     imports: [NgFor, FormsModule, AsyncPipe, AutoCompleteComponent],

@@ -10,8 +10,8 @@ import { CreateItemComponent } from "../create-item/create-item.component";
 @Component({
     selector: "oww-view-items",
     template: `
-        <h2>All Items</h2>
-        <button (click)="beginItemCreation()">Create Item</button>
+        <h2 i18n>All Items</h2>
+        <button (click)="beginItemCreation()" i18n>Create Item</button>
         <ul>
             <!-- todo sasha: add virtual scrolling -->
             <li *ngFor="let item of itemsService.itemDescriptions$ | async">
@@ -26,8 +26,8 @@ import { CreateItemComponent } from "../create-item/create-item.component";
         </ng-template>
 
         <ng-template #nameItem>
-            Please select a name for the new item: <input [(ngModel)]="itemName">
-            <button (click)="onItemNamed()">Save new Item</button><button (click)="cancel()">Cancel</button>
+            <span i18n>Please select a name for the new item:</span> <input [(ngModel)]="itemName">
+            <button (click)="onItemNamed()" i18n>Save new Item</button><button (click)="cancel()" i18n>Cancel</button>
         </ng-template>
     `,
     standalone: true,

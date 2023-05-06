@@ -22,9 +22,9 @@ import { calculatePointsAndData as calculatePointsAndFreeItems } from "src/app/u
 
         <oww-add-item (item)="addItem($event)" />
 
-        <p>This meal is worth {{ calculatedPoints }} points.</p>
-        <button [disabled]="!items.length" (click)="saveMeal()">Save</button>
-        <button (click)="cancel()">Cancel</button>
+        <p i18n>This meal is worth {{ calculatedPoints }} points.</p>
+        <button [disabled]="!items.length" (click)="saveMeal()" i18n>Save</button>
+        <button (click)="cancel()" i18n>Cancel</button>
     `,
     standalone: true,
     imports: [NgFor, AsyncPipe, FormsModule, AddItemComponent],

@@ -7,7 +7,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "extract": "ng extract-i18n --format=json --output-path=src/locale"
   },
   "private": true,
   "dependencies": {
