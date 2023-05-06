@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { AfterViewInit, Component, ElementRef, TemplateRef, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { fromEvent } from "rxjs";
+import { Observable, fromEvent, takeUntil } from "rxjs";
 import { DialogService } from "src/app/services/dialog.service";
 
 @Component({
@@ -30,6 +30,8 @@ export class DialogComponent implements AfterViewInit {
     @ViewChild("dialog", { read: ElementRef })
     protected dialogElement!: ElementRef<HTMLDialogElement>;
 
+    private destroyed = new Observable().pipe(takeUntilDestroyed());
+
     constructor(private dialogService: DialogService) {
         this.dialogService.show$.pipe(takeUntilDestroyed()).subscribe(template => { 
             this.templateToShow = template; 
@@ -46,6 +48,6 @@ export class DialogComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        fromEvent(this.dialogElement.nativeElement, "close").pipe(takeUntilDestroyed()).subscribe(() => this.dialogService.closeModal());
+        fromEvent(this.dialogElement.nativeElement, "close").pipe(takeUntil(this.destroyed)).subscribe(() => this.dialogService.closeModal());
     }
 }
