@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, ElementRef, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
-import { fromEvent, Subject, takeUntil } from "rxjs";
+import { AfterViewInit, Component, ElementRef, TemplateRef, ViewChild } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { fromEvent } from "rxjs";
 import { DialogService } from "src/app/services/dialog.service";
 
 @Component({
@@ -23,16 +24,14 @@ import { DialogService } from "src/app/services/dialog.service";
     standalone: true,
     imports: [CommonModule]
 })
-export class DialogComponent implements AfterViewInit, OnDestroy {
-    private readonly destroyed: Subject<void> = new Subject();
-
+export class DialogComponent implements AfterViewInit {
     public templateToShow: TemplateRef<unknown> | undefined;
 
     @ViewChild("dialog", { read: ElementRef })
     protected dialogElement!: ElementRef<HTMLDialogElement>;
 
     constructor(private dialogService: DialogService) {
-        this.dialogService.show$.pipe(takeUntil(this.destroyed)).subscribe(template => { 
+        this.dialogService.show$.pipe(takeUntilDestroyed()).subscribe(template => { 
             this.templateToShow = template; 
 
             if (!this.dialogElement.nativeElement.open) {
@@ -40,17 +39,13 @@ export class DialogComponent implements AfterViewInit, OnDestroy {
             }
         });
 
-        this.dialogService.close$.pipe(takeUntil(this.destroyed)).subscribe(() => {
+        this.dialogService.close$.pipe(takeUntilDestroyed()).subscribe(() => {
             this.templateToShow = undefined;
             this.dialogElement?.nativeElement.close();
         });
     }
 
     ngAfterViewInit(): void {
-        fromEvent(this.dialogElement.nativeElement, "close").pipe(takeUntil(this.destroyed)).subscribe(() => this.dialogService.closeModal());
-    }
-
-    ngOnDestroy(): void {
-        this.destroyed.next();
+        fromEvent(this.dialogElement.nativeElement, "close").pipe(takeUntilDestroyed()).subscribe(() => this.dialogService.closeModal());
     }
 }

@@ -62,7 +62,7 @@ export class MealsService {
     }));
 
     public readonly dailyPoints$: Observable<number> = this.dailyMeals$.pipe(map(meals => {
-        const [totalPoints, _] = calculatePointsAndData(meals.flatMap(meal => meal.items), 0, false);
+        const [totalPoints] = calculatePointsAndData(meals.flatMap(meal => meal.items), 0, false);
 
         return totalPoints;
     }));

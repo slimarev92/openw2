@@ -1,12 +1,13 @@
 
 import { AsyncPipe, DatePipe, NgFor } from "@angular/common";
-import { ChangeDetectionStrategy, Component, OnDestroy, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { take } from "rxjs";
 import { Meal } from "src/app/models/meal";
 import { MealItemType } from "src/app/models/meal-type";
 import { DialogService } from "src/app/services/dialog.service";
 import { AddMealComponent } from "src/app/components/add-meal/add-meal.component";
 import { MealsService } from "src/app/services/meals.service";
-import { Subject, take, takeUntil } from "rxjs";
 import { MealItem } from "src/app/models/meal-item";
 
 @Component({
@@ -53,7 +54,7 @@ import { MealItem } from "src/app/models/meal-item";
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DailyOverviewComponent implements OnDestroy {
+export class DailyOverviewComponent {
     readonly mealTypeEnum = MealItemType;
     readonly today: Date = new Date();
 
@@ -65,15 +66,9 @@ export class DailyOverviewComponent implements OnDestroy {
     protected freeFruitItems: Set<MealItem> = new Set<MealItem>();
     protected freeProteinItem: MealItem | undefined;
 
-    private readonly destroyed = new Subject<void>();
-
     constructor(private dialogService: DialogService, public mealsService: MealsService) {
-        this.mealsService.todaysFreeFruitItems$.pipe(takeUntil(this.destroyed)).subscribe(freeFruitItems => this.freeFruitItems = freeFruitItems);
-        this.mealsService.todaysFreeProteinItem$.pipe(takeUntil(this.destroyed)).subscribe(freeProteinItem => this.freeProteinItem = freeProteinItem);
-    }
-
-    ngOnDestroy(): void {
-        this.destroyed.next();
+        this.mealsService.todaysFreeFruitItems$.pipe(takeUntilDestroyed()).subscribe(freeFruitItems => this.freeFruitItems = freeFruitItems);
+        this.mealsService.todaysFreeProteinItem$.pipe(takeUntilDestroyed()).subscribe(freeProteinItem => this.freeProteinItem = freeProteinItem);
     }
 
     addMeal() {
