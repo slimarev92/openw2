@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Fredoka:wght@400;700&display=swap');
 
 // CSS RESET
 /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -138,7 +138,7 @@ table {
 
 // END OF CSS RESET
 
-$app-font: 'Comic Neue', cursive;
+$app-font: 'Fredoka', 'Comic Neue', cursive;
 
 @media (max-width: 1250px) {
     html {
