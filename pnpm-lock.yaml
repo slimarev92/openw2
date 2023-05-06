@@ -22,9 +22,6 @@ dependencies:
   '@angular/platform-browser':
     specifier: ^16.0.0
     version: 16.0.0(@angular/animations@16.0.0)(@angular/common@16.0.0)(@angular/core@16.0.0)
-  '@angular/platform-browser-dynamic':
-    specifier: ^16.0.0
-    version: 16.0.0(@angular/common@16.0.0)(@angular/compiler@16.0.0)(@angular/core@16.0.0)(@angular/platform-browser@16.0.0)
   '@angular/router':
     specifier: ^16.0.0
     version: 16.0.0(@angular/common@16.0.0)(@angular/core@16.0.0)(@angular/platform-browser@16.0.0)(rxjs@7.8.0)
@@ -404,22 +401,6 @@ packages:
       yargs: 17.7.2
     transitivePeerDependencies:
       - supports-color
-
-  /@angular/platform-browser-dynamic@16.0.0(@angular/common@16.0.0)(@angular/compiler@16.0.0)(@angular/core@16.0.0)(@angular/platform-browser@16.0.0):
-    resolution: {integrity: sha512-xUR36r+7hFQjAb0RA0VFfWrCLj2VnWg0xJgPe4FQmwaEWjKMc011tkJXs0PApaiTxvE0W08nadSDTu5jfsBrFw==}
-    engines: {node: ^16.14.0 || >=18.10.0}
-    peerDependencies:
-      '@angular/common': 16.0.0
-      '@angular/compiler': 16.0.0
-      '@angular/core': 16.0.0
-      '@angular/platform-browser': 16.0.0
-    dependencies:
-      '@angular/common': 16.0.0(@angular/core@16.0.0)(rxjs@7.8.0)
-      '@angular/compiler': 16.0.0(@angular/core@16.0.0)
-      '@angular/core': 16.0.0(rxjs@7.8.0)(zone.js@0.13.0)
-      '@angular/platform-browser': 16.0.0(@angular/animations@16.0.0)(@angular/common@16.0.0)(@angular/core@16.0.0)
-      tslib: 2.4.1
-    dev: false
 
   /@angular/platform-browser@16.0.0(@angular/animations@16.0.0)(@angular/common@16.0.0)(@angular/core@16.0.0):
     resolution: {integrity: sha512-6LpgLfEnumKMKM/S9joWrVSm4MdFuIjddFmlSG7zGcRqwM0N8doH/YkuwTK8/t9q8wI/yztp6qM2pg25Pgv1XA==}

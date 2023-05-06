@@ -1,7 +1,7 @@
 import { NgFor } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { NavigationEnd, Route, Router, RouterLink } from "@angular/router";
+import { NavigationEnd, Router, RouterLink } from "@angular/router";
 import { filter, skip } from "rxjs";
 import { OVERVIEW_ROUTE, RouteWithResolveFunction, VIEW_ITEMS_ROUTE } from "src/app/routes/routes";
 
