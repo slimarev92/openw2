@@ -29,7 +29,7 @@ import { MealItem } from "src/app/models/meal-item";
         </ng-container>
 
         <ng-template #addMealModal>
-            <oww-add-meal [meal]="mealToEdit" (mealChange)="saveMeal($event)"></oww-add-meal>
+            <oww-add-meal [meal]="mealToEdit" (mealChange)="saveMeal($event)" />
         </ng-template>
     `,
     styles: [`

@@ -22,7 +22,7 @@ import { CreateItemComponent } from "../create-item/create-item.component";
         </ul>
 
         <ng-template #createItem>
-            <oww-create-item (item)="onItemCreated($event)"></oww-create-item>
+            <oww-create-item (item)="onItemCreated($event)" />
         </ng-template>
 
         <ng-template #nameItem>

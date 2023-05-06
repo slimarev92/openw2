@@ -7,7 +7,7 @@ import { AddMealComponent } from "../add-meal/add-meal.component";
 @Component({
     selector: "oww-create-item",
     template: `
-        <oww-add-meal [freeItemsEnabled]="false" (mealChange)="itemCreated($event)"></oww-add-meal>
+        <oww-add-meal [freeItemsEnabled]="false" (mealChange)="itemCreated($event)" />
     `,
     standalone: true,
     imports: [AddMealComponent],

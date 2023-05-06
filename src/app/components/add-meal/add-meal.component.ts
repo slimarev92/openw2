@@ -20,7 +20,7 @@ import { calculatePointsAndData as calculatePointsAndFreeItems } from "src/app/u
             </li>
         </ul>
 
-        <oww-add-item (item)="addItem($event)"></oww-add-item>
+        <oww-add-item (item)="addItem($event)" />
 
         <p>This meal is worth {{ calculatedPoints }} points.</p>
         <button [disabled]="!items.length" (click)="saveMeal()">Save</button>

@@ -19,7 +19,7 @@ import { Subject, combineLatest, map } from "rxjs";
     `],
     template: `
         <div class="input-container">
-            <oww-autocomplete containerWidth="100%" [(ngModel)]="selectedItem" [autoCompleteItems$]="filteredDescriptions$" (enteredText)="enteredTextSubject.next($event)"></oww-autocomplete>
+            <oww-autocomplete containerWidth="100%" [(ngModel)]="selectedItem" [autoCompleteItems$]="filteredDescriptions$" (enteredText)="enteredTextSubject.next($event)" />
             <input type="number" [(ngModel)]="itemAmount" [min]="0" #amount (change)="amount.value = +amount.value < 0 ? '0' : amount.value">
         </div>
 
