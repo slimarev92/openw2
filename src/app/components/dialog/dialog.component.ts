@@ -1,13 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, ElementRef, TemplateRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, TemplateRef, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Observable, fromEvent, takeUntil } from "rxjs";
 import { DialogService } from "src/app/services/dialog.service";
 
 @Component({
     selector: "oww-dialog",
     template: `
-        <dialog #dialog>
+        <dialog #dialog (close)="dialogService.closeModal()">
             <ng-container *ngTemplateOutlet="templateToShow || blank"></ng-container>
         </dialog>
         <ng-template #blank></ng-template>
@@ -24,15 +23,13 @@ import { DialogService } from "src/app/services/dialog.service";
     standalone: true,
     imports: [CommonModule]
 })
-export class DialogComponent implements AfterViewInit {
+export class DialogComponent {
     public templateToShow: TemplateRef<unknown> | undefined;
 
     @ViewChild("dialog", { read: ElementRef })
     protected dialogElement!: ElementRef<HTMLDialogElement>;
 
-    private destroyed = new Observable().pipe(takeUntilDestroyed());
-
-    constructor(private dialogService: DialogService) {
+    constructor(protected dialogService: DialogService) {
         this.dialogService.show$.pipe(takeUntilDestroyed()).subscribe(template => { 
             this.templateToShow = template; 
 
@@ -42,12 +39,10 @@ export class DialogComponent implements AfterViewInit {
         });
 
         this.dialogService.close$.pipe(takeUntilDestroyed()).subscribe(() => {
+            // TODO SASHA: WHEN THE DIALOG CLOSES PROGRAMATICALLY, CLOSE$ EMITS TWICE (THE SECOND TIME IS FROM THE DIALOG ELEMENT'S CLOSE EVENT). FIND A BETTER WAY.
+
             this.templateToShow = undefined;
             this.dialogElement?.nativeElement.close();
         });
-    }
-
-    ngAfterViewInit(): void {
-        fromEvent(this.dialogElement.nativeElement, "close").pipe(takeUntil(this.destroyed)).subscribe(() => this.dialogService.closeModal());
     }
 }
