@@ -23,7 +23,7 @@ export type HasItemText = {
 
             > .clear {
                 position: absolute;
-                right: 0.1rem;
+                inset-inline-end: 0.2rem;
                 margin: 0.2rem;
                 font-size: 0.9rem;
             }
