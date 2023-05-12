@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, map, Observable, take } from "rxjs";
+import { BehaviorSubject, map, Observable, share, take } from "rxjs";
 import dayjs from "dayjs/esm";
 
 import { Meal } from "../models/meal";
@@ -15,37 +15,49 @@ export class MealsService {
     private readonly mealsSubject = new BehaviorSubject<Meal[]>([]);
     private readonly allowedDailyPointsSubject = new BehaviorSubject<number>(26);
 
-    public readonly dailyMeals$: Observable<Meal[]> = this.mealsSubject.pipe(map(meals => {
-        const today = dayjs().startOf("d");
+    public readonly dailyMeals$: Observable<Meal[]> = this.mealsSubject.pipe(
+        map(meals => {
+            const today = dayjs().startOf("d");
 
-        return meals.filter(meal => dayjs(meal.time).isAfter(today));
-    }));
+            return meals.filter(meal => dayjs(meal.time).isAfter(today));
+        }),
+        share({ resetOnRefCountZero: false })
+    );
 
-    public readonly dailyPoints$: Observable<number> = this.dailyMeals$.pipe(map(meals => {
-        const [totalPoints] = calculatePointsAndData(meals.flatMap(meal => meal.items), 0, false);
+    public readonly dailyPoints$: Observable<number> = this.dailyMeals$.pipe(
+        map(meals => {
+            const [totalPoints] = calculatePointsAndData(meals.flatMap(meal => meal.items), 0, false);
 
-        return totalPoints;
-    }));
+            return totalPoints;
+        }),
+        share({ resetOnRefCountZero: false })
+    );
 
     public readonly allowedDailyPoints$ = this.allowedDailyPointsSubject.asObservable();
 
-    public readonly todaysFreeFruitItems$: Observable<Set<MealItem>> = this.dailyMeals$.pipe(map(meals => {
-        const dailyItems = meals.flatMap(meal => meal.items);
+    public readonly todaysFreeFruitItems$: Observable<Set<MealItem>> = this.dailyMeals$.pipe(
+        map(meals => {
+            const dailyItems = meals.flatMap(meal => meal.items);
 
-        const freeItemArray = dailyItems.reduce((freeFruit, currentItem) => {
-            if (freeFruit.length >= 3 || currentItem.type !== MealItemType.Fruit) {
-                return freeFruit;
-            }
+            const freeItemArray = dailyItems.reduce((freeFruit, currentItem) => {
+                if (freeFruit.length >= 3 || currentItem.type !== MealItemType.Fruit) {
+                    return freeFruit;
+                }
 
-            return [...freeFruit, currentItem];
-        }, [] as MealItem[]);
+                return [...freeFruit, currentItem];
+            }, [] as MealItem[]);
 
-        return new Set(freeItemArray);
-    }));
+            return new Set(freeItemArray);
+        }), 
+        share({ resetOnRefCountZero: false })
+    );
 
-    public readonly todaysFreeProteinItem$: Observable<MealItem | undefined> = this.dailyMeals$.pipe(map(meals => {
-        return meals.flatMap(meal => meal.items).find(item => item.type === MealItemType.Protein);
-    }));
+    public readonly todaysFreeProteinItem$: Observable<MealItem | undefined> = this.dailyMeals$.pipe(
+        map(meals => {
+            return meals.flatMap(meal => meal.items).find(item => item.type === MealItemType.Protein);
+        }),
+        share({ resetOnRefCountZero: false })
+    );
 
     constructor(private readonly dbService: DbService) {
         this.dbService.db$.pipe(take(1)).subscribe(async db => {
