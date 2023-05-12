@@ -65,7 +65,7 @@ export class AddMealComponent implements OnInit {
     protected calculatedPoints = 0;
     protected freeItemIndexes = new Set<number>();
 
-    constructor(private mealsService: MealsService, protected itemsService: ItemsService) {
+    constructor(private readonly mealsService: MealsService, protected itemsService: ItemsService) {
         this.mealsService.allowedDailyPoints$.pipe(take(1)).subscribe(allowedDailyPoints => this.allowedDailyPoints = allowedDailyPoints);
         this.mealsService.dailyPoints$.pipe(take(1)).subscribe(dailyPoints => this.startingPoints = dailyPoints);
         this.mealsService.todaysFreeProteinItem$.pipe(take(1)).subscribe(freeItem => this.usedFreeProteinToday = !!freeItem);

@@ -66,7 +66,7 @@ export class DailyOverviewComponent {
     protected freeFruitItems: Set<MealItem> = new Set<MealItem>();
     protected freeProteinItem: MealItem | undefined;
 
-    constructor(private dialogService: DialogService, public mealsService: MealsService) {
+    constructor(private readonly dialogService: DialogService, public mealsService: MealsService) {
         this.mealsService.todaysFreeFruitItems$.pipe(takeUntilDestroyed()).subscribe(freeFruitItems => this.freeFruitItems = freeFruitItems);
         this.mealsService.todaysFreeProteinItem$.pipe(takeUntilDestroyed()).subscribe(freeProteinItem => this.freeProteinItem = freeProteinItem);
     }

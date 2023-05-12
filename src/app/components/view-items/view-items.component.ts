@@ -44,7 +44,7 @@ export class ViewItemsComponent {
     protected itemName = "";
     private createdItem!: MealItemDescription;
 
-    constructor(protected itemsService: ItemsService, private dialogService: DialogService) {}
+    constructor(protected itemsService: ItemsService, private readonly dialogService: DialogService) {}
 
     beginItemCreation() {
         if (!this.createItemTemplate) {

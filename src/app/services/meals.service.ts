@@ -12,47 +12,7 @@ import { DbService } from "./db.service";
     providedIn: "root"
 })
 export class MealsService {
-    private meals: Meal[] = [
-        {
-            name: "breakfast",
-            time: new Date(2023, 0, 13, 15, 23),
-            items: [
-                {
-                    name: "Avocado, quarter",
-                    points: 1,
-                    amount: 1,
-                    type: MealItemType.Vegetable, // todo sasha: check this with yasmin
-                },
-                {
-                    name: "Watermelon, medium slice, 250 g",
-                    points: 5,
-                    amount: 2,
-                    type: MealItemType.Fruit, // todo sasha: check this with yasmin
-                },
-            ]
-        },
-        {
-            name: "lunch",
-            time: new Date(2023, 0, 13, 16, 23),
-            items: [
-                {
-                    name: "Avocado, quarter",
-                    points: 1,
-                    amount: 1,
-                    type: MealItemType.Vegetable, // todo sasha: check this with yasmin
-                },
-                {
-                    name: "Watermelon, medium slice, 250 g",
-                    points: 5,
-                    amount: 2,
-                    type: MealItemType.Fruit, // todo sasha: check this with yasmin
-                },
-            ]
-        },
-    ];
-
     private readonly mealsSubject = new BehaviorSubject<Meal[]>([]);
-
     private readonly allowedDailyPointsSubject = new BehaviorSubject<number>(26);
 
     public readonly dailyMeals$: Observable<Meal[]> = this.mealsSubject.pipe(map(meals => {
@@ -87,7 +47,7 @@ export class MealsService {
         return meals.flatMap(meal => meal.items).find(item => item.type === MealItemType.Protein);
     }));
 
-    constructor(private dbService: DbService) {
+    constructor(private readonly dbService: DbService) {
         this.dbService.db$.pipe(take(1)).subscribe(async db => {
             const store = db.transaction("meals").store;
 

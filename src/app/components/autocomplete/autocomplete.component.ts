@@ -1,5 +1,5 @@
 import { AsyncPipe, NgForOf, NgIf } from "@angular/common";
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostListener, Input, Output, forwardRef } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, forwardRef } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { EMPTY, Observable } from "rxjs";
 
@@ -95,7 +95,7 @@ export class AutoCompleteComponent implements ControlValueAccessor {
 
     private outsideOnChange = (_: unknown) => void _;
 
-    constructor(private changeDetector: ChangeDetectorRef) { }
+    constructor(private readonly changeDetector: ChangeDetectorRef) { }
 
     protected onInput($event: Event) {
         const value = ($event.target as HTMLInputElement).value;

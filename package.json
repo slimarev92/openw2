@@ -5,12 +5,15 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build-actual": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "extract": "ng extract-i18n --format=json --output-path=src/locale"
+    "extract": "ng extract-i18n --format=json --output-path=src/locale",
+    "lint": "pnpx eslint ./src --ext ts",
+    "build": "pnpm run lint && pnpm run build-actual"
   },
   "private": true,
+  "packageManager": "pnpm@8.2.0",
   "dependencies": {
     "@angular/animations": "^16.0.0",
     "@angular/common": "^16.0.0",
@@ -20,7 +23,6 @@
     "@angular/localize": "^16.0.0",
     "@angular/platform-browser": "^16.0.0",
     "@angular/router": "^16.0.0",
-    "@vercel/node": "^2.10.3",
     "dayjs": "^1.11.7",
     "idb": "^7.1.1",
     "rxjs": "~7.8.0",

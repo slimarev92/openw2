@@ -36,7 +36,7 @@ export class NavBarComponent {
     protected routes: RouteWithResolveFunction[] = [];
 
     constructor(router: Router) {
-        // todo sasha: find out why this doesn't work with ActivatedRoute.
+        // TODO SASHA: find out why this doesn't work with ActivatedRoute.
         router.events.pipe(takeUntilDestroyed(), filter(event => event instanceof NavigationEnd), skip(1)).subscribe(() => {
             this.flipItems();
         });

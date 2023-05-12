@@ -13,7 +13,7 @@ export class ItemsService {
 
     public readonly itemDescriptions$ = this.itemDescriptionsSubject.asObservable();
 
-    constructor(private dbService: DbService) {
+    constructor(private readonly dbService: DbService) {
         dbService.db$.pipe(take(1)).subscribe(async db => {
             let store = db.transaction("items", "readwrite").store;
             const itemsCount = await store.count();

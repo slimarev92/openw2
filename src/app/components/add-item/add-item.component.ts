@@ -33,7 +33,7 @@ import { Subject, combineLatest, map } from "rxjs";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddItemComponent {
-    private autoCompleteItemsSubject = new Subject<HasItemText[]>();
+    private readonly autoCompleteItemsSubject = new Subject<HasItemText[]>();
 
     protected autoCompleteItems$ = this.autoCompleteItemsSubject.asObservable();
 
