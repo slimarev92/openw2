@@ -21,7 +21,7 @@ import { MealItem } from "src/app/models/meal-item";
             <ul>
                 <li *ngFor="let item of meal.items">
                     <h4>{{item.name}}</h4>
-                    <p>{{item.points}} x {{ item.amount }} = <span [class.free-item]="freeFruitItems.has(item) || freeProteinItem === item">{{ (item.points || 0) * (item.amount || 0) }}</span></p>
+                    <p>{{item.points}}x{{ item.amount }} = <span [class.free-item]="freeFruitItems.has(item) || freeProteinItem === item">{{ (item.points || 0) * (item.amount || 0) }}</span></p>
                     <p>{{mealTypeEnum[item.type]}}</p>
                 </li>
             </ul>

@@ -15,7 +15,7 @@ import { calculatePointsAndData as calculatePointsAndFreeItems } from "src/app/u
     template: `
         <ul>
             <li *ngFor="let item of items; let i = index">
-                {{item.name}}: {{item.points}} x {{item.amount}} = <span [class.free-item]="freeItemsEnabled && freeItemIndexes.has(i)">{{item.amount * item.points}}</span>
+                {{item.name}}: {{item.points}}x{{item.amount}} = <span [class.free-item]="freeItemsEnabled && freeItemIndexes.has(i)">{{item.amount * item.points}}</span>
                 <button (click)="removeItem(i)">X</button>
             </li>
         </ul>
