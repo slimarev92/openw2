@@ -13,7 +13,7 @@ import { MealItem } from "src/app/models/meal-item";
 @Component({
     selector: "oww-daily-overview",
     template: `
-        <h2 i18n>Today's Overview - {{today | date: 'shortDate'}} - {{mealsService.dailyPoints$ | async}} Points</h2>
+        <h2 i18n>Today's Overview - {{today | date: 'shortDate'}} - {{mealsService.dailyPoints$ | async}} / {{mealsService.allowedDailyPoints$ | async}} Points</h2>
         <button (click)="addMeal(addMealModal)" i18n>Add Meal</button>
 
         <ng-container *ngFor="let meal of mealsService.dailyMeals$ | async; let i = index">
