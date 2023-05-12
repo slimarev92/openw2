@@ -4,7 +4,7 @@ import { filter, Subject } from "rxjs";
 
 @Injectable({ providedIn: "root"})
 export class DbService {
-    private readonly dbSubject = new Subject<IDBPDatabase>();
+    private dbSubject = new Subject<IDBPDatabase>();
     private readonly upgradeDb = (db: IDBPDatabase) => {
         db.createObjectStore("items", { keyPath: "name" });
         db.createObjectStore("meals", { keyPath: "name" });
