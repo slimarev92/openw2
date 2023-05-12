@@ -3,22 +3,26 @@ import { MealItemType } from "../models/meal-type";
 
 export const ITEM_DESCRIPTIONS: MealItemDescription[] = [
     {
-        name: "Hummus",
+        canonicalName: "Hummus",
+        name: $localize `Hummus`,
         type: MealItemType.Protein, 
         points: 10
     },
     {
-        name: "Hummus2",
+        canonicalName: "Hummus2",
+        name: $localize `Hummus2`,
         type: MealItemType.Protein, 
         points: 10
     },
     {
-        name: "Apple",
+        canonicalName: "Apple",
+        name: $localize `Apple`,
         type: MealItemType.Fruit, 
         points: 5
     },
     {
-        name: "Loaf of bread",
+        canonicalName: "Loaf of bread",
+        name: $localize `Loaf of bread`,
         type: MealItemType.Regular, 
         points: 2
     }

@@ -1,6 +1,6 @@
 
 import { AsyncPipe, DatePipe, NgFor } from "@angular/common";
-import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, TemplateRef } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { take } from "rxjs";
 import { Meal } from "src/app/models/meal";
@@ -14,11 +14,10 @@ import { MealItem } from "src/app/models/meal-item";
     selector: "oww-daily-overview",
     template: `
         <h2 i18n>Today's Overview - {{today | date: 'shortDate'}} - {{mealsService.dailyPoints$ | async}} Points</h2>
-        <button (click)="addMeal()" i18n>Add Meal</button>
+        <button (click)="addMeal(addMealModal)" i18n>Add Meal</button>
 
         <ng-container *ngFor="let meal of mealsService.dailyMeals$ | async; let i = index">
-            <!-- todo sasha: why to local timestring en-gb? use browser locale instead -->
-            <h3>{{ i + 1}}: {{ meal.time.toLocaleTimeString() }} <button (click)="editMeal(meal)">E</button><button (click)="deleteMeal(meal)">X</button></h3>
+            <h3>{{ i + 1}}: {{ meal.time | date: 'shortTime'}} <button (click)="editMeal(meal, addMealModal)">E</button><button (click)="deleteMeal(meal)">X</button></h3>
             <ul>
                 <li *ngFor="let item of meal.items">
                     <h4>{{item.name}}</h4>
@@ -58,9 +57,6 @@ export class DailyOverviewComponent {
     readonly mealTypeEnum = MealItemType;
     readonly today: Date = new Date();
 
-    @ViewChild("addMealModal")
-    protected dialogTemplate!: TemplateRef<unknown>;
-
     protected mealToEdit!: Meal | undefined;
 
     protected freeFruitItems: Set<MealItem> = new Set<MealItem>();
@@ -71,12 +67,8 @@ export class DailyOverviewComponent {
         this.mealsService.todaysFreeProteinItem$.pipe(takeUntilDestroyed()).subscribe(freeProteinItem => this.freeProteinItem = freeProteinItem);
     }
 
-    addMeal() {
-        if (!this.dialogTemplate) {
-            return;
-        }
-
-        this.dialogService.showModal(this.dialogTemplate);
+    addMeal(dialogTemplate: TemplateRef<unknown>) {
+        this.dialogService.showModal(dialogTemplate);
     }
 
     saveMeal(meal: Meal) {
@@ -97,10 +89,10 @@ export class DailyOverviewComponent {
         }
     }
 
-    editMeal(meal: Meal) {
+    editMeal(meal: Meal, dialogTemplate: TemplateRef<unknown>) {
         this.mealToEdit = meal;
 
-        this.dialogService.showModal(this.dialogTemplate);
+        this.dialogService.showModal(dialogTemplate);
         this.dialogService.close$.pipe(take(1)).subscribe(() => this.mealToEdit = undefined);
     }
 

@@ -1,5 +1,5 @@
 import { AsyncPipe, NgFor } from "@angular/common";
-import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, TemplateRef } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MealItemDescription } from "src/app/models/meal-item-description";
 import { DialogService } from "src/app/services/dialog.service";
@@ -11,7 +11,7 @@ import { CreateItemComponent } from "../create-item/create-item.component";
     selector: "oww-view-items",
     template: `
         <h2 i18n>All Items</h2>
-        <button (click)="beginItemCreation()" i18n>Create Item</button>
+        <button (click)="beginItemCreation(createItem)" i18n>Create Item</button>
         <ul>
             <!-- todo sasha: add virtual scrolling -->
             <li *ngFor="let item of itemsService.itemDescriptions$ | async">
@@ -22,7 +22,7 @@ import { CreateItemComponent } from "../create-item/create-item.component";
         </ul>
 
         <ng-template #createItem>
-            <oww-create-item (item)="onItemCreated($event)" />
+            <oww-create-item (item)="onItemCreated(nameItem, $event)" />
         </ng-template>
 
         <ng-template #nameItem>
@@ -35,27 +35,17 @@ import { CreateItemComponent } from "../create-item/create-item.component";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewItemsComponent {
-    @ViewChild("createItem")
-    protected createItemTemplate!: TemplateRef<unknown>;
-
-    @ViewChild("nameItem")
-    protected nameItemTemplate!: TemplateRef<unknown>;
-
     protected itemName = "";
     private createdItem!: MealItemDescription;
 
     constructor(protected itemsService: ItemsService, private readonly dialogService: DialogService) {}
 
-    beginItemCreation() {
-        if (!this.createItemTemplate) {
-            return;
-        }
-
-        this.dialogService.showModal(this.createItemTemplate);
+    beginItemCreation(createItemTemplate: TemplateRef<unknown>) {
+        this.dialogService.showModal(createItemTemplate);
     }
 
-    onItemCreated(item: MealItemDescription) {
-        if (!item || !this.nameItemTemplate) {
+    onItemCreated(nameItemTemplate: TemplateRef<unknown>, item?: MealItemDescription) {
+        if (!item) {
             this.dialogService.closeModal();
 
             return;
@@ -63,7 +53,7 @@ export class ViewItemsComponent {
 
         this.createdItem = item;
 
-        this.dialogService.showModal(this.nameItemTemplate);
+        this.dialogService.showModal(nameItemTemplate);
     }
 
     onItemNamed() {
@@ -72,6 +62,7 @@ export class ViewItemsComponent {
         }
 
         this.createdItem.name = this.itemName;
+        this.createdItem.canonicalName = this.itemName;
 
         this.itemsService.createItem(this.createdItem);
 

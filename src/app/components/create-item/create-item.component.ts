@@ -25,11 +25,11 @@ export class CreateItemComponent {
         }
 
         const points = itemAsMeal.items.reduce((total, curr) => total + curr.points, 0);
-        const name = "";
         const type = MealItemType.Regular;
 
         const createdItem: MealItemDescription = {
-            name,
+            canonicalName: "",
+            name: "",
             points,
             type
         };
