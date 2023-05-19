@@ -1,136 +1,38 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, map, Observable, share, take } from "rxjs";
-import dayjs from "dayjs/esm";
+import { BehaviorSubject, Observable } from "rxjs";
 
 import { Meal } from "../models/meal";
-import { MealItemType } from "../models/meal-type";
 import { MealItem } from "../models/meal-item";
-import { calculatePointsAndData } from "src/app/utils/utils";
-import { DbService } from "./db.service";
+import { ADD_MEAL, DELETE_MEAL, LOAD_MEALS, REPLACE_MEAL } from "../state/meals/meals.actions";
+import { selectDailyPoints, selectTodaysFruitItems, selectTodaysFreeProteinItems } from "../state/meals/meals.selectors";
+import { Store } from "@ngrx/store";
+import { AppState } from "../state/app.state";
 
 @Injectable({
     providedIn: "root"
 })
 export class MealsService {
-    private readonly mealsSubject = new BehaviorSubject<Meal[]>([]);
     private readonly allowedDailyPointsSubject = new BehaviorSubject<number>(26);
 
-    public readonly dailyMeals$: Observable<Meal[]> = this.mealsSubject.pipe(
-        map(meals => {
-            const today = dayjs().startOf("d");
-
-            return meals.filter(meal => dayjs(meal.time).isAfter(today));
-        }),
-        share({ resetOnRefCountZero: false })
-    );
-
-    public readonly dailyPoints$: Observable<number> = this.dailyMeals$.pipe(
-        map(meals => {
-            const [totalPoints] = calculatePointsAndData(meals.flatMap(meal => meal.items), 0, false);
-
-            return totalPoints;
-        }),
-        share({ resetOnRefCountZero: false })
-    );
-
+    public readonly dailyPoints$ = this.store.select(selectDailyPoints);
     public readonly allowedDailyPoints$ = this.allowedDailyPointsSubject.asObservable();
+    public readonly todaysFreeFruitItems$: Observable<Set<MealItem>> = this.store.select(selectTodaysFruitItems);
+    public readonly todaysFreeProteinItem$: Observable<MealItem | undefined> = this.store.select(selectTodaysFreeProteinItems);
 
-    public readonly todaysFreeFruitItems$: Observable<Set<MealItem>> = this.dailyMeals$.pipe(
-        map(meals => {
-            const dailyItems = meals.flatMap(meal => meal.items);
-
-            const freeItemArray = dailyItems.reduce((freeFruit, currentItem) => {
-                if (freeFruit.length >= 3 || currentItem.type !== MealItemType.Fruit) {
-                    return freeFruit;
-                }
-
-                return [...freeFruit, currentItem];
-            }, [] as MealItem[]);
-
-            return new Set(freeItemArray);
-        }), 
-        share({ resetOnRefCountZero: false })
-    );
-
-    public readonly todaysFreeProteinItem$: Observable<MealItem | undefined> = this.dailyMeals$.pipe(
-        map(meals => {
-            return meals.flatMap(meal => meal.items).find(item => item.type === MealItemType.Protein);
-        }),
-        share({ resetOnRefCountZero: false })
-    );
-
-    constructor(private readonly dbService: DbService) {
-        this.dbService.db$.pipe(take(1)).subscribe(async db => {
-            const store = db.transaction("meals").store;
-
-            let allMeals: Meal[] = [];
-
-            try {
-                allMeals = await store.getAll();
-
-                this.mealsSubject.next(allMeals);
-            } catch (e) {
-                console.error(`Can't get all meals from db due to error: ${e}`);
-            }
-        });
+    // TODO SASHA: DEAL WITH LINT WARN HERE.
+    constructor(private readonly store: Store<AppState>) {
+        this.store.dispatch(LOAD_MEALS());
     }
 
-    public addMeal(meal: Meal) {
-        this.dbService.db$.pipe(take(1)).subscribe(async db => {
-            const tx = db.transaction("meals", "readwrite");
-            const store = tx.store;
-
-            try {
-                await store.add(meal);
-
-                this.mealsSubject.next([...this.mealsSubject.value, meal]);
-            } catch (e) {
-                console.error(`Can't add item to db due to error: ${e}`);
-            }
-        });
+    public addMeal(mealToAdd: Meal) {
+        this.store.dispatch(ADD_MEAL({ mealToAdd }));
     }
 
-    public replaceMeal(oldMeal: Meal, replacement: Meal) {
-        this.dbService.db$.pipe(take(1)).subscribe(async db => {
-            try {
-                const store = db.transaction("meals", "readwrite").store;
-
-                await store.put(replacement);
-
-            } catch (e) {
-                console.log(`Can't replace meal due to error: ${e}`);
-
-                return;
-            }
-
-            const oldMealIndex = this.mealsSubject.value.findIndex(curr => curr === oldMeal);
-
-            if (oldMealIndex === -1) {
-                return;
-            }
-    
-            const modifiedMeals = [...this.mealsSubject.value];
-    
-            modifiedMeals.splice(oldMealIndex, 1, replacement);
-    
-            this.mealsSubject.next(modifiedMeals);
-        });
+    public replaceMeal(replacement: Meal) {
+        this.store.dispatch(REPLACE_MEAL({ replacement }));
     }
 
     public deleteMeal(mealToDelete: Meal) {
-        this.dbService.db$.pipe(take(1)).subscribe(async db => {
-            try {
-                const store = db.transaction("meals", "readwrite").store;
-
-                await store.delete(mealToDelete.name);
-
-            } catch (e) {
-                console.log(`Can't delete meal due to error: ${e}`);
-
-                return;
-            }
-
-            this.mealsSubject.next(this.mealsSubject.value.filter(curr => curr !== mealToDelete));
-        });
+        this.store.dispatch(DELETE_MEAL({ mealToDelete }));
     }
 }

@@ -2,13 +2,16 @@
 import { AsyncPipe, DatePipe, NgFor } from "@angular/common";
 import { ChangeDetectionStrategy, Component, TemplateRef } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { take } from "rxjs";
+import { Observable, take } from "rxjs";
 import { Meal } from "src/app/models/meal";
 import { MealItemType } from "src/app/models/meal-type";
 import { DialogService } from "src/app/services/dialog.service";
 import { AddMealComponent } from "src/app/components/add-meal/add-meal.component";
 import { MealsService } from "src/app/services/meals.service";
 import { MealItem } from "src/app/models/meal-item";
+import { selectDailyMeals } from "src/app/state/meals/meals.selectors";
+import { Store } from "@ngrx/store";
+import { AppState } from "src/app/state/app.state";
 
 @Component({
     selector: "oww-daily-overview",
@@ -16,7 +19,7 @@ import { MealItem } from "src/app/models/meal-item";
         <h2 i18n>Today's Overview - {{today | date: 'shortDate'}} - {{mealsService.dailyPoints$ | async}} / {{mealsService.allowedDailyPoints$ | async}} Points</h2>
         <button (click)="addMeal(addMealModal)" i18n>Add Meal</button>
 
-        <ng-container *ngFor="let meal of mealsService.dailyMeals$ | async; let i = index">
+        <ng-container *ngFor="let meal of dailyMeals$ | async; let i = index">
             <h3>{{ i + 1}}: {{ meal.time | date: 'shortTime'}} <button (click)="editMeal(meal, addMealModal)">E</button><button (click)="deleteMeal(meal)">X</button></h3>
             <ul>
                 <li *ngFor="let item of meal.items">
@@ -62,9 +65,13 @@ export class DailyOverviewComponent {
     protected freeFruitItems: Set<MealItem> = new Set<MealItem>();
     protected freeProteinItem: MealItem | undefined;
 
-    constructor(private readonly dialogService: DialogService, public mealsService: MealsService) {
+    protected dailyMeals$: Observable<Meal[]>;
+
+    constructor(private readonly dialogService: DialogService, public mealsService: MealsService, private readonly store: Store<AppState>) {
         this.mealsService.todaysFreeFruitItems$.pipe(takeUntilDestroyed()).subscribe(freeFruitItems => this.freeFruitItems = freeFruitItems);
         this.mealsService.todaysFreeProteinItem$.pipe(takeUntilDestroyed()).subscribe(freeProteinItem => this.freeProteinItem = freeProteinItem);
+
+        this.dailyMeals$ = this.store.select(selectDailyMeals);
     }
 
     addMeal(dialogTemplate: TemplateRef<unknown>) {
@@ -80,7 +87,8 @@ export class DailyOverviewComponent {
         }
 
         if (mealToEdit) {
-            this.mealsService.replaceMeal(mealToEdit, meal);
+            // TODO SASHA: LOOKS LIKE THERE'S A BUG AND THIS DOESN'T WORK (IT APPEARS TO CREATE A DUPLICATE OF THE MEAL INSTEAD OF PREPLACING IT)
+            this.mealsService.replaceMeal(meal);
         } else {
             // TODO sasha: add proper way of naming a meal.
             meal.name = Math.random() + "";
