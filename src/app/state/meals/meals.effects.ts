@@ -1,6 +1,6 @@
 import { inject } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { from, map, switchMap } from "rxjs";
+import { from, map, switchMap, tap } from "rxjs";
 import { DbService } from "src/app/services/db.service";
 import { ADD_MEAL, ADD_MEAL_FINISHED, DELETE_MEAL, DELETE_MEAL_FINISHED, LOAD_MEALS, LOAD_MEALS_FINISHED, REPLACE_MEAL, REPLACE_MEAL_FINISHED } from "./meals.actions";
 import { Meal } from "src/app/models/meal";
@@ -80,3 +80,5 @@ export const DELETE_MEAL_EFFECT = createEffect((actions = inject(Actions), dbSer
         map(deletedMeal => DELETE_MEAL_FINISHED({ deletedMeal }))
     );
 }, { functional: true });
+
+export const MEALS_EFFECTS = {LOAD_MEALS_EFFECT, ADD_MEAL_EFFECT, REPLACE_MEAL_EFFECT, DELETE_MEAL_EFFECT};

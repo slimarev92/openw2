@@ -8,9 +8,11 @@ import { provideStore } from "@ngrx/store";
 
 import { AppComponent } from "./app/app.component";
 import { APP_ROUTES } from "./app/routes/routes";
-import { ADD_MEAL_EFFECT, DELETE_MEAL_EFFECT, LOAD_MEALS_EFFECT, REPLACE_MEAL_EFFECT } from "./app/state/meals/meals.effects";
 import { provideEffects } from "@ngrx/effects";
 import { mealsReducer } from "./app/state/meals/meals.reducer";
+import { ITEM_EFFECTS } from "./app/state/items/items.effects";
+import { MEALS_EFFECTS } from "./app/state/meals/meals.effects";
+import { itemsReducer } from "./app/state/items/items.reducer";
 
 // TODO SASHA: THIS IS A BIT CLUNKLY, BUT APPARENTLY THERE ISNT REALLY A BETTER WAY. COULD BE CLEANED UP A LITTLE.
 async function registerLocale() {
@@ -44,8 +46,8 @@ async function bootstrap() {
                     useValue: localeId 
                 },
                 provideRouter(APP_ROUTES),
-                provideStore({ meals: mealsReducer}),
-                provideEffects({LOAD_MEALS_EFFECT, ADD_MEAL_EFFECT, REPLACE_MEAL_EFFECT, DELETE_MEAL_EFFECT})
+                provideStore({ meals: mealsReducer, items: itemsReducer}),
+                provideEffects({ ...MEALS_EFFECTS, ...ITEM_EFFECTS })
             ]
         });
 }

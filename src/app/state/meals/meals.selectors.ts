@@ -7,10 +7,10 @@ import { calculatePointsAndData } from "src/app/utils/utils";
 import { MealItemType } from "src/app/models/meal-type";
 import { MealItem } from "src/app/models/meal-item";
 
-export const SELECT_MEALS = (state: AppState) => state.meals;
+export const selectMeals = (state: AppState) => state.meals;
 
 export const selectAllMeals = createSelector(
-    SELECT_MEALS,
+    selectMeals,
     (state: MealsState) => state.meals,
 );
 
