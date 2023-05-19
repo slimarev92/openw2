@@ -87,7 +87,6 @@ export class DailyOverviewComponent {
         }
 
         if (mealToEdit) {
-            // TODO SASHA: LOOKS LIKE THERE'S A BUG AND THIS DOESN'T WORK (IT APPEARS TO CREATE A DUPLICATE OF THE MEAL INSTEAD OF PREPLACING IT)
             this.mealsService.replaceMeal(meal);
         } else {
             // TODO sasha: add proper way of naming a meal.
