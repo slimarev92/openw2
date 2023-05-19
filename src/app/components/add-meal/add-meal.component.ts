@@ -88,7 +88,7 @@ export class AddMealComponent implements OnInit {
 
     protected saveMeal() {
         const meal: Meal = {
-            name: "",
+            name: this.meal?.name || "",
             time: new Date(),
             items: this.items
         };
